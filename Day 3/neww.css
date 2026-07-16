@@ -1,0 +1,21 @@
+*{
+    margin: 0%;
+    padding: 0%;
+}
+h1{
+    color: crimson;
+    margin: 0%;
+    width: 50%;
+    height: 50%;
+    background-color: bisque;
+}
+p{
+    color: blueviolet;
+}
+html,body{
+    width: 100%;
+    height: 100%;
+}
+div{
+    background-color: rgb(90, 158, 81);
+}
