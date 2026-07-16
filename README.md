@@ -1,4 +1,4 @@
-# HTML Practice – Day 1 🌐
+# HTML Practice – Day 1 
 
 This repository contains my Day 1 HTML practice while learning and revising the fundamentals of web development.
 
@@ -18,7 +18,7 @@ This repository contains my Day 1 HTML practice while learning and revising the 
 
 ---
 
-# HTML & CSS Practice – Day 2 🎨
+# HTML & CSS Practice – Day 2 
 
 This repository contains my Day 2 practice, where I started learning CSS and how to style HTML webpages.
 
@@ -35,7 +35,7 @@ This repository contains my Day 2 practice, where I started learning CSS and how
 
 ---
 
-# HTML & CSS Practice – Day 3 📦
+# HTML & CSS Practice – Day 3 
 
 This repository contains my Day 3 practice, where I learned more CSS and started using `<div>` elements.
 
