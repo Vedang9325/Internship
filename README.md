@@ -50,3 +50,20 @@ This repository contains my Day 3 practice, where I learned more CSS and started
 * Styling `html` and `body`
 * CSS units (`%`)
 * Basic container styling
+
+# HTML & CSS Practice – Day 4
+
+This repository contains my Day 4 practice, where I learned the basics of CSS Flexbox for creating flexible layouts and centering elements.
+
+## Topics Covered
+
+* CSS Flexbox
+* `display: flex`
+* `justify-content`
+* `align-items`
+* Viewport height (`100vh`)
+* Centering elements horizontally and vertically
+* Nested elements (`<h4>` inside a `<div>`)
+* Creating simple side-by-side layouts
+
+---
