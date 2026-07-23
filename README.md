@@ -1,55 +1,63 @@
-# HTML Practice – Day 1 
+# Web Development Internship
+
+**Name:** Vedang Satardekar  
+**Mentor:** Jinendra Patil
+
+---
+
+# HTML Practice – Day 1
 
 This repository contains my Day 1 HTML practice while learning and revising the fundamentals of web development.
 
 ## Topics Covered
 
-* Basic HTML document structure
-* Headings (`<h1>` to `<h6>`)
-* Paragraphs (`<p>`)
-* Line breaks (`<br>`)
-* Images
-
-  * External image
-  * Local image
-* Hyperlinks (`<a>`)
-* Horizontal rule (`<hr>`)
-* Text formatting (`<big>`)
+- Basic HTML document structure
+- Headings (`<h1>` to `<h6>`)
+- Paragraphs (`<p>`)
+- Line breaks (`<br>`)
+- Images
+  - External image
+  - Local image
+- Hyperlinks (`<a>`)
+- Horizontal rule (`<hr>`)
+- Text formatting (`<big>`)
 
 ---
 
-# HTML & CSS Practice – Day 2 
+# HTML & CSS Practice – Day 2
 
 This repository contains my Day 2 practice, where I started learning CSS and how to style HTML webpages.
 
 ## Topics Covered
 
-* External CSS
-* Linking CSS using `<link>`
-* Background colors
-* Text colors
-* Font family
-* Text alignment
-* Width property
-* Styling multiple HTML pages
+- External CSS
+- Linking CSS using `<link>`
+- Background colors
+- Text colors
+- Font family
+- Text alignment
+- Width property
+- Styling multiple HTML pages
 
 ---
 
-# HTML & CSS Practice – Day 3 
+# HTML & CSS Practice – Day 3
 
 This repository contains my Day 3 practice, where I learned more CSS and started using `<div>` elements.
 
 ## Topics Covered
 
-* `<div>` element
-* Universal selector (`*`)
-* Margin and padding
-* Width and height
-* Background colors
-* Text colors
-* Styling `html` and `body`
-* CSS units (`%`)
-* Basic container styling
+- `<div>` element
+- Universal selector (`*`)
+- Margin and padding
+- Width and height
+- Background colors
+- Text colors
+- Styling `html` and `body`
+- CSS units (`%`)
+- Basic container styling
+
+---
 
 # HTML & CSS Practice – Day 4
 
@@ -57,13 +65,30 @@ This repository contains my Day 4 practice, where I learned the basics of CSS Fl
 
 ## Topics Covered
 
-* CSS Flexbox
-* `display: flex`
-* `justify-content`
-* `align-items`
-* Viewport height (`100vh`)
-* Centering elements horizontally and vertically
-* Nested elements (`<h4>` inside a `<div>`)
-* Creating simple side-by-side layouts
+- CSS Flexbox
+- `display: flex`
+- `justify-content`
+- `align-items`
+- Viewport height (`100vh`)
+- Centering elements horizontally and vertically
+- Nested elements (`<h4>` inside a `<div>`)
+- Creating simple side-by-side layouts
+
+---
+
+# HTML & CSS Practice – Day 5
+
+This repository contains my Day 5 practice, where I explored the CSS Box Model in more detail and learned how to style elements using borders and reusable selectors.
+
+## Topics Covered
+
+- CSS Box Model
+- Border properties
+- Border radius
+- CSS classes (`.class`)
+- CSS IDs (`#id`)
+- Styling multiple elements using classes
+- Creating circular elements using `border-radius`
+- Combining margin, padding, and borders for layouts
 
 ---
