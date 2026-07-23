@@ -1,0 +1,25 @@
+*{
+    margin: 0%;
+    padding: 0%;
+}
+html,body{
+    height: 100%;
+    width: 100%;
+}
+body{
+    background-color: antiquewhite;
+    display: flex;
+}
+div{
+    height: 200px;
+    width: 200px;
+}
+#box1{
+    background-color: aquamarine;
+}
+#box2{
+    background-color: brown;
+}
+#box3{
+    background-color: green;
+}
