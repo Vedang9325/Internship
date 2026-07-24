@@ -92,3 +92,19 @@ This repository contains my Day 5 practice, where I explored the CSS Box Model i
 - Combining margin, padding, and borders for layouts
 
 ---
+
+# HTML & CSS Practice – Day 6
+
+This repository contains my Day 6 practice, where I created different geometric shapes using CSS and practiced positioning elements with nested layouts.
+
+## Topics Covered
+
+- Creating shapes using CSS
+- Square
+- Circle (`border-radius: 50%`)
+- Diamond shape (`transform: rotate(45deg)`)
+- Nested `<div>` elements
+- Combining CSS classes and IDs
+- Flexbox alignment
+- Basic layout structuring
+- Centering text inside shapes
