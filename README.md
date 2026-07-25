@@ -108,3 +108,22 @@ This repository contains my Day 6 practice, where I created different geometric 
 - Flexbox alignment
 - Basic layout structuring
 - Centering text inside shapes
+
+---
+
+# HTML & CSS Practice – Day 7
+
+This repository contains my Day 7 practice, where I learned CSS positioning, stacking elements using `z-index`, image cards, and rotation effects to create a fanned card layout with hover interactions.
+
+## Topics Covered
+
+- CSS Positioning (`position: absolute`)
+- Centering elements using `top`, `left`, and `transform`
+- CSS Transforms (`translate()` and `rotate()`)
+- `z-index` for stacking elements
+- `overflow: hidden`
+- `object-fit: cover`
+- Image cards
+- Card overlap (stacked layout)
+- Hover effects
+- Creating a card fan using rotation
