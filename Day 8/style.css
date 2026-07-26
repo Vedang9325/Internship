@@ -1,0 +1,45 @@
+*{
+    margin: 0%;
+    padding: 0%;
+    box-sizing: border-box;
+}
+
+html,body{
+    height: 100%;
+    width: 100%;
+}
+
+#main{
+    height: 100%;
+    width: 100%;
+}
+
+#header{
+    height: 10vh;
+    width: 100%;
+    background-color: bisque;
+    position: fixed;
+}
+
+#fakeheader{
+    height: 10%;
+    width: 100%;
+}
+
+#page1{
+    height: 90%;
+    width: 100%;
+    background-color: aquamarine;
+}
+
+#page2{
+    height: 90%;
+    width: 100%;
+    background-color: salmon;
+}
+
+#page3{
+    height: 90%;
+    width: 100%;
+    background-color:darkgreen;
+}

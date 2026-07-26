@@ -127,3 +127,20 @@ This repository contains my Day 7 practice, where I learned CSS positioning, sta
 - Card overlap (stacked layout)
 - Hover effects
 - Creating a card fan using rotation
+
+---
+
+# HTML & CSS Practice – Day 8
+
+This repository contains my Day 8 practice, where I started building the basic layout structure of a Salesforce landing page clone. The focus was on creating a clean page skeleton and understanding how fixed headers affect page layouts.
+
+## Topics Covered
+
+- Website layout structuring
+- Multiple page sections (`page1`, `page2`, `page3`)
+- Fixed navigation bar (`position: fixed`)
+- Creating a placeholder header using a fake header
+- Viewport height (`vh`) for responsive sections
+- Basic responsive page layout
+- CSS positioning
+- Organizing HTML with semantic section containers
