@@ -142,5 +142,3 @@ This repository contains my Day 8 practice, where I started building the basic l
 - Creating a placeholder header using a fake header
 - Viewport height (`vh`) for responsive sections
 - Basic responsive page layout
-- CSS positioning
-- Organizing HTML with semantic section containers
