@@ -137,8 +137,41 @@ This repository contains my Day 8 practice, where I started building the basic l
 ## Topics Covered
 
 - Website layout structuring
-- Multiple page sections (`page1`, `page2`, `page3`)
 - Fixed navigation bar (`position: fixed`)
 - Creating a placeholder header using a fake header
 - Viewport height (`vh`) for responsive sections
 - Basic responsive page layout
+
+# HTML & CSS Practice – Day 9
+
+This repository contains my Day 9 practice, where I expanded the Salesforce landing page clone by building the hero section and creating a structured two-column layout for the page content.
+
+## Topics Covered
+
+* Flexbox layouts
+* Two-column page design
+* Hero section creation
+* Typography styling
+* CSS hover effects
+* Buttons with hover states
+* Using icons with Remix Icon
+* Navigation bar enhancements
+* Spacing using margin and padding
+* Responsive sizing using percentages
+
+---
+
+# HTML & CSS Practice – Day 10
+
+This repository contains my Day 10 practice, where I improved the Salesforce landing page clone by embedding a YouTube video, refining the page layout, and making the interface closer to the original website.
+
+## Topics Covered
+
+* Embedding YouTube videos using `<iframe>`
+* Media integration
+* Content layout refinement
+* Flexbox alignment and positioning
+* Fixed header with scroll compensation
+* Styling interactive navigation elements
+* Hover effects for buttons and icons
+* Section-based webpage organization
