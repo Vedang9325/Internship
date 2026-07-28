@@ -175,3 +175,4 @@ This repository contains my Day 10 practice, where I improved the Salesforce lan
 * Styling interactive navigation elements
 * Hover effects for buttons and icons
 * Section-based webpage organization
+* Made identical webpage like salesforce
