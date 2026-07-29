@@ -176,3 +176,25 @@ This repository contains my Day 10 practice, where I improved the Salesforce lan
 * Hover effects for buttons and icons
 * Section-based webpage organization
 * Made identical webpage like salesforce
+
+---
+
+# PHP Practice – Day 11
+
+This repository contains my Day 11 practice, where I set up a local PHP development environment using XAMPP and wrote my first PHP program to understand the fundamentals of server-side scripting.
+
+## Topics Covered
+
+* Installing and configuring XAMPP
+* Running PHP using Apache (`localhost`)
+* PHP syntax and script tags (`<?php ?>`)
+* Output using `echo`
+* Variables and data storage
+* Arithmetic operators
+* Assignment operators
+* Comparison operators using `var_dump()`
+* Increment and decrement operators
+* Single-line comments in PHP
+* Embedding PHP within HTML
+
+---
