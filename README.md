@@ -148,16 +148,16 @@ This repository contains my Day 9 practice, where I expanded the Salesforce land
 
 ## Topics Covered
 
-* Flexbox layouts
-* Two-column page design
-* Hero section creation
-* Typography styling
-* CSS hover effects
-* Buttons with hover states
-* Using icons with Remix Icon
-* Navigation bar enhancements
-* Spacing using margin and padding
-* Responsive sizing using percentages
+- Flexbox layouts
+- Two-column page design
+- Hero section creation
+- Typography styling
+- CSS hover effects
+- Buttons with hover states
+- Using icons with Remix Icon
+- Navigation bar enhancements
+- Spacing using margin and padding
+- Responsive sizing using percentages
 
 ---
 
@@ -167,15 +167,15 @@ This repository contains my Day 10 practice, where I improved the Salesforce lan
 
 ## Topics Covered
 
-* Embedding YouTube videos using `<iframe>`
-* Media integration
-* Content layout refinement
-* Flexbox alignment and positioning
-* Fixed header with scroll compensation
-* Styling interactive navigation elements
-* Hover effects for buttons and icons
-* Section-based webpage organization
-* Made identical webpage like salesforce
+- Embedding YouTube videos using `<iframe>`
+- Media integration
+- Content layout refinement
+- Flexbox alignment and positioning
+- Fixed header with scroll compensation
+- Styling interactive navigation elements
+- Hover effects for buttons and icons
+- Section-based webpage organization
+- Made identical webpage like salesforce
 
 ---
 
@@ -185,16 +185,42 @@ This repository contains my Day 11 practice, where I set up a local PHP developm
 
 ## Topics Covered
 
-* Installing and configuring XAMPP
-* Running PHP using Apache (`localhost`)
-* PHP syntax and script tags (`<?php ?>`)
-* Output using `echo`
-* Variables and data storage
-* Arithmetic operators
-* Assignment operators
-* Comparison operators using `var_dump()`
-* Increment and decrement operators
-* Single-line comments in PHP
-* Embedding PHP within HTML
+- Installing and configuring XAMPP
+- Running PHP using Apache (`localhost`)
+- PHP syntax and script tags (`<?php ?>`)
+- Output using `echo`
+- Variables and data storage
+- Arithmetic operators
+- Assignment operators
+- Comparison operators using `var_dump()`
+- Increment and decrement operators
+- Single-line comments in PHP
+- Embedding PHP within HTML
 
 ---
+
+# PHP Practice – Day 12
+
+This repository contains my Day 12 practice, where I explored the core programming concepts of PHP, including conditional statements, loops, arrays, functions, constants, data types, logical operators, and commonly used string functions.
+
+## Topics Covered
+
+- Conditional statements (`if`, `elseif`, `else`)
+- Arrays in PHP
+- Accessing array elements
+- Array length using `count()`
+- `while` loop, `do...while` loop, `for` loop, `foreach` loop
+- Iterating through arrays
+- User-defined functions
+- Functions with parameters
+- Defining constants using `define()`
+- Logical operators (`and`, `or`)
+- Data types
+- Using `var_dump()`
+- String functions
+  - `strlen()`
+  - `str_word_count()`
+  - `strrev()`
+  - `strpos()`
+  - `str_replace()`
+- String concatenation using the `.` operator
