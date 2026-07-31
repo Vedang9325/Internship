@@ -224,3 +224,28 @@ This repository contains my Day 12 practice, where I explored the core programmi
   - `strpos()`
   - `str_replace()`
 - String concatenation using the `.` operator
+
+---
+
+# PHP Practice – Day 13
+
+This repository contains my Day 13 practice, where I built a complete PHP-MySQL form that stores user data in a MySQL database using XAMPP and phpMyAdmin.
+
+## Topics Covered
+
+- HTML forms
+- Form submission using `POST`
+- Handling user input with `$_POST`
+- Connecting PHP to MySQL using MySQLi
+- Creating a MySQL database
+- Creating tables in phpMyAdmin
+- SQL `INSERT` queries
+- Auto Increment Primary Key
+- Default Timestamp (`CURRENT_TIMESTAMP`)
+- Storing and viewing records in phpMyAdmin
+- Form validation basics
+- Styling forms with CSS
+- Background images using `object-fit: cover`
+- Flexbox for form alignment
+
+---
