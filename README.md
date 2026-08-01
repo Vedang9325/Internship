@@ -229,7 +229,7 @@ This repository contains my Day 12 practice, where I explored the core programmi
 
 # PHP Practice – Day 13
 
-This repository contains my Day 13 practice, where I built a complete PHP-MySQL form that stores user data in a MySQL database using XAMPP and phpMyAdmin.
+This repository contains my Day 13 practice, where I built a PHP-MySQL form that stores user data in a MySQL database using XAMPP and phpMyAdmin.
 
 ## Topics Covered
 
@@ -243,9 +243,26 @@ This repository contains my Day 13 practice, where I built a complete PHP-MySQL 
 - Auto Increment Primary Key
 - Default Timestamp (`CURRENT_TIMESTAMP`)
 - Storing and viewing records in phpMyAdmin
-- Form validation basics
-- Styling forms with CSS
-- Background images using `object-fit: cover`
-- Flexbox for form alignment
+- Basic form validation
 
 ---
+
+# PHP Practice – Day 14
+
+This repository contains my Day 14 practice, where I improved the registration form by enhancing its user interface, organizing the project structure, and providing user feedback after successful form submission.
+
+## Topics Covered
+
+- Integrating PHP with HTML
+- Displaying dynamic success messages
+- Conditional rendering using PHP
+- External CSS styling
+- Responsive form design
+- Flexbox for form layout
+- Full-screen background image
+- Image scaling using `object-fit: cover`
+- Layer management using `z-index`
+- Fixed background implementation using `position: fixed`
+- Custom button styling
+- Google Fonts integration
+- Organizing HTML, CSS, JavaScript, and PHP into separate files
