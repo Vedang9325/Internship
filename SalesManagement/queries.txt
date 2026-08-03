@@ -1,0 +1,25 @@
+CREATE TABLE employees(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    role VARCHAR(50) NOT NULL
+);
+
+
+CREATE TABLE tasks(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    employee_id INT NOT NULL,
+    task_name VARCHAR(200) NOT NULL,
+    priority VARCHAR(20) NOT NULL,
+    deadline DATE NOT NULL,
+    FOREIGN KEY(employee_id) REFERENCES employees(id)
+);
+
+INSERT INTO employees(name,email,password,role)
+VALUES(
+'Vedang',
+'admin@gmail.com',
+'admin123',
+'Manager'
+);
