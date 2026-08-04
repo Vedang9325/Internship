@@ -1,0 +1,53 @@
+body{
+    font-family:Arial;
+    background:#f2f2f2;
+}
+
+.login-box{
+    width:350px;
+    margin:100px auto;
+    background:white;
+    padding:20px;
+    border:1px solid #ccc;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin-top:5px;
+    margin-bottom:15px;
+}
+
+input[type=submit]{
+    background:#007BFF;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+th{
+    background:#007BFF;
+    color:white;
+}
+
+th,td{
+    padding:10px;
+    text-align:left;
+}
+
+a{
+    text-decoration:none;
+    color:blue;
+}
+
+select{
+    width:100%;
+    padding:10px;
+    margin-bottom:15px;
+}
