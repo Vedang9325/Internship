@@ -19,20 +19,19 @@ include("config.php");
 if(isset($_POST['add']))
 {
     $name=$_POST['name'];
-    $user_id=$_POST['user_id'];
+    $contact=$_POST['contact'];
+    $phone=$_POST['phone'];
     $email=$_POST['email'];
-    $role=$_POST['role'];
+    $product=$_POST['product'];
 
-    $password="Welcome123";
-
-    $sql="INSERT INTO employees
-          (name,user_id,email,password,role,must_change_password)
+    $sql="INSERT INTO companies
+          (name,contact,phone,email,product_interest)
           VALUES
-          ('$name','$user_id','$email','$password','$role',1)";
+          ('$name','$contact','$phone','$email','$product')";
 
     mysqli_query($conn,$sql);
 
-    header("Location: employees.php");
+    header("Location: companies.php");
     exit();
 }
 
@@ -42,9 +41,9 @@ if(isset($_GET['delete']))
     $id=$_GET['delete'];
 
     mysqli_query($conn,
-        "DELETE FROM employees WHERE id=$id");
+        "DELETE FROM companies WHERE id=$id");
 
-    header("Location: employees.php");
+    header("Location: companies.php");
     exit();
 }
 ?>
@@ -55,7 +54,7 @@ if(isset($_GET['delete']))
 
 <head>
 
-<title>Employees</title>
+<title>Companies</title>
 <link rel="stylesheet" href="style.css">
 
 </head>
@@ -70,7 +69,7 @@ if(isset($_GET['delete']))
 
 <div>
 
-<h1>Employee Management</h1>
+<h1>Company Management</h1>
 
 <p>
 Logged in as
@@ -97,51 +96,45 @@ Logged in as
 
 <div class="box">
 
-<h2>Add Employee</h2>
+<h2>Add Company</h2>
 
 <form method="POST">
 
 
-<label>Name</label>
+<label>Company Name</label>
 
 <input type="text"
        name="name"
        required>
 
 
-<label>User ID</label>
+<label>Contact Person</label>
 
 <input type="text"
-       name="user_id"
-       required>
+       name="contact">
+
+
+<label>Phone</label>
+
+<input type="text"
+       name="phone">
 
 
 <label>Email</label>
 
 <input type="email"
-       name="email"
-       required>
+       name="email">
 
 
-<label>Role</label>
+<label>Interested Product</label>
 
-<select name="role">
-
-<option>Employee</option>
-<option>Manager</option>
-
-</select>
-
-
-<p>
-Temporary Password:
-<b>Welcome123</b>
-</p>
+<input type="text"
+       name="product">
 
 
 <input type="submit"
        name="add"
-       value="Add Employee">
+       value="Add Company">
 
 
 </form>
@@ -151,17 +144,18 @@ Temporary Password:
 
 <div class="box">
 
-<h2>Employee List</h2>
+<h2>Company List</h2>
 
 
 <table>
 
 <tr>
 
-<th>User ID</th>
-<th>Name</th>
+<th>Company</th>
+<th>Contact</th>
+<th>Phone</th>
 <th>Email</th>
-<th>Role</th>
+<th>Product Interest</th>
 <th>Action</th>
 
 </tr>
@@ -170,7 +164,7 @@ Temporary Password:
 <?php
 
 $result=mysqli_query($conn,
-    "SELECT * FROM employees
+    "SELECT * FROM companies
      ORDER BY name");
 
 
@@ -182,11 +176,15 @@ while($row=mysqli_fetch_assoc($result))
 <tr>
 
 <td>
-<?php echo $row['user_id']; ?>
+<?php echo $row['name']; ?>
 </td>
 
 <td>
-<?php echo $row['name']; ?>
+<?php echo $row['contact']; ?>
+</td>
+
+<td>
+<?php echo $row['phone']; ?>
 </td>
 
 <td>
@@ -194,13 +192,13 @@ while($row=mysqli_fetch_assoc($result))
 </td>
 
 <td>
-<?php echo $row['role']; ?>
+<?php echo $row['product_interest']; ?>
 </td>
 
 <td>
 
-<a href="employees.php?delete=<?php echo $row['id']; ?>"
-   onclick="return confirm('Delete this employee?');">
+<a href="companies.php?delete=<?php echo $row['id']; ?>"
+   onclick="return confirm('Delete this company?');">
 
 Delete
 
