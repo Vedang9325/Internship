@@ -15,7 +15,6 @@ if($_SESSION['role']!="Manager")
 
 include("config.php");
 
-
 if(isset($_POST['add']))
 {
     $name=$_POST['name'];
@@ -51,7 +50,6 @@ if(isset($_GET['delete']))
 
 <!DOCTYPE html>
 <html>
-
 <head>
 
 <title>Companies</title>
@@ -59,14 +57,10 @@ if(isset($_GET['delete']))
 
 </head>
 
-
 <body>
 
 <div class="container">
-
-
 <div class="header">
-
 <div>
 
 <h1>Company Management</h1>
@@ -77,11 +71,8 @@ Logged in as
 </p>
 
 </div>
-
 <a href="logout.php">Logout</a>
-
 </div>
-
 
 <nav>
 
@@ -93,13 +84,11 @@ Logged in as
 
 </nav>
 
-
 <div class="box">
 
 <h2>Add Company</h2>
 
 <form method="POST">
-
 
 <label>Company Name</label>
 
@@ -107,59 +96,48 @@ Logged in as
        name="name"
        required>
 
-
 <label>Contact Person</label>
 
 <input type="text"
        name="contact">
-
 
 <label>Phone</label>
 
 <input type="text"
        name="phone">
 
-
 <label>Email</label>
 
 <input type="email"
        name="email">
-
 
 <label>Interested Product</label>
 
 <input type="text"
        name="product">
 
-
 <input type="submit"
        name="add"
        value="Add Company">
-
 
 </form>
 
 </div>
 
-
 <div class="box">
 
 <h2>Company List</h2>
 
-
 <table>
 
 <tr>
-
 <th>Company</th>
 <th>Contact</th>
 <th>Phone</th>
 <th>Email</th>
 <th>Product Interest</th>
 <th>Action</th>
-
 </tr>
-
 
 <?php
 
@@ -167,34 +145,27 @@ $result=mysqli_query($conn,
     "SELECT * FROM companies
      ORDER BY name");
 
-
 while($row=mysqli_fetch_assoc($result))
 {
 
 ?>
 
 <tr>
-
 <td>
 <?php echo $row['name']; ?>
 </td>
-
 <td>
 <?php echo $row['contact']; ?>
 </td>
-
 <td>
 <?php echo $row['phone']; ?>
 </td>
-
 <td>
 <?php echo $row['email']; ?>
 </td>
-
 <td>
 <?php echo $row['product_interest']; ?>
 </td>
-
 <td>
 
 <a href="companies.php?delete=<?php echo $row['id']; ?>"
@@ -203,9 +174,7 @@ while($row=mysqli_fetch_assoc($result))
 Delete
 
 </a>
-
 </td>
-
 </tr>
 
 <?php
@@ -217,7 +186,6 @@ Delete
 </table>
 
 </div>
-
 
 </div>
 

@@ -40,9 +40,7 @@ if(isset($_POST['change']))
 <title>Change Password</title>
 <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
 <div class="login-box">
 
 <h2>Change Password</h2>
@@ -50,15 +48,11 @@ if(isset($_POST['change']))
 <p>Please change your temporary password.</p>
 
 <form method="POST">
-
 <label>New Password</label>
 <input type="password" name="password" required>
-
 <label>Confirm Password</label>
 <input type="password" name="confirm" required>
-
 <input type="submit" name="change" value="Change Password">
-
 </form>
 
 <?php
@@ -69,6 +63,5 @@ if(isset($error))
 ?>
 
 </div>
-
 </body>
 </html>
