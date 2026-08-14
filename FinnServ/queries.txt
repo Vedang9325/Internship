@@ -1,0 +1,237 @@
+CREATE DATABASE finnserv
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+USE finnserv;
+
+
+CREATE TABLE companies (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(150) NOT NULL,
+    mailing_name VARCHAR(150),
+    address TEXT,
+    state VARCHAR(100),
+    country VARCHAR(100) NOT NULL DEFAULT 'India',
+    pincode VARCHAR(10),
+    phone VARCHAR(20),
+    email VARCHAR(150),
+    gstin VARCHAR(15),
+    financial_year_start DATE NOT NULL,
+    financial_year_end DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+
+CREATE TABLE users (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    company_id INT UNSIGNED NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('Admin', 'Manager', 'Accountant', 'Viewer') NOT NULL DEFAULT 'Viewer',
+    is_active TINYINT(1) NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY unique_company_username (company_id, username),
+
+    FOREIGN KEY (company_id)
+        REFERENCES companies(id)
+        ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE groups (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    company_id INT UNSIGNED NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    parent_id INT UNSIGNED NULL,
+    nature ENUM(
+        'Assets',
+        'Liabilities',
+        'Income',
+        'Expenses'
+    ) NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY unique_company_group (company_id, name),
+
+    FOREIGN KEY (company_id)
+        REFERENCES companies(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (parent_id)
+        REFERENCES groups(id)
+        ON DELETE SET NULL
+);
+
+
+
+CREATE TABLE ledgers (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    company_id INT UNSIGNED NOT NULL,
+    group_id INT UNSIGNED NOT NULL,
+
+    name VARCHAR(150) NOT NULL,
+    alias VARCHAR(100),
+
+    opening_balance DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+    opening_balance_type ENUM('Debit', 'Credit') NOT NULL DEFAULT 'Debit',
+
+    mailing_name VARCHAR(150),
+    mailing_address TEXT,
+    state VARCHAR(100),
+    country VARCHAR(100) NOT NULL DEFAULT 'India',
+    pincode VARCHAR(10),
+
+    phone VARCHAR(20),
+    email VARCHAR(150),
+
+    gstin VARCHAR(15),
+
+    provide_bank_details TINYINT(1) NOT NULL DEFAULT 0,
+    bank_name VARCHAR(150),
+    account_number VARCHAR(50),
+    ifsc_code VARCHAR(20),
+    branch_name VARCHAR(150),
+
+    is_active TINYINT(1) NOT NULL DEFAULT 1,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    UNIQUE KEY unique_company_ledger (company_id, name),
+
+    FOREIGN KEY (company_id)
+        REFERENCES companies(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (group_id)
+        REFERENCES groups(id)
+        ON DELETE RESTRICT
+);
+
+
+
+
+CREATE TABLE voucher_types (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    company_id INT UNSIGNED NOT NULL,
+    name VARCHAR(50) NOT NULL,
+    abbreviation VARCHAR(10) NOT NULL,
+    numbering_method ENUM(
+        'Automatic',
+        'Manual'
+    ) NOT NULL DEFAULT 'Automatic',
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY unique_company_voucher_type (company_id, name),
+
+    FOREIGN KEY (company_id)
+        REFERENCES companies(id)
+        ON DELETE CASCADE
+);
+
+
+
+CREATE TABLE vouchers (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    company_id INT UNSIGNED NOT NULL,
+    voucher_type_id INT UNSIGNED NOT NULL,
+
+    voucher_number VARCHAR(50) NOT NULL,
+    voucher_date DATE NOT NULL,
+
+    reference_number VARCHAR(100),
+    narration TEXT,
+
+    created_by INT UNSIGNED NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP,
+
+    UNIQUE KEY unique_voucher_number (
+        company_id,
+        voucher_type_id,
+        voucher_number
+    ),
+
+    FOREIGN KEY (company_id)
+        REFERENCES companies(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (voucher_type_id)
+        REFERENCES voucher_types(id)
+        ON DELETE RESTRICT,
+
+    FOREIGN KEY (created_by)
+        REFERENCES users(id)
+        ON DELETE RESTRICT
+);
+
+
+
+
+CREATE TABLE voucher_entries (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    voucher_id BIGINT UNSIGNED NOT NULL,
+    ledger_id INT UNSIGNED NOT NULL,
+
+    debit DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+    credit DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+
+    narration VARCHAR(255),
+
+    FOREIGN KEY (voucher_id)
+        REFERENCES vouchers(id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (ledger_id)
+        REFERENCES ledgers(id)
+        ON DELETE RESTRICT
+);
+
+
+
+
+CREATE TABLE financial_years (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    company_id INT UNSIGNED NOT NULL,
+
+    name VARCHAR(20) NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL,
+
+    is_active TINYINT(1) NOT NULL DEFAULT 0,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    UNIQUE KEY unique_company_financial_year (
+        company_id,
+        name
+    ),
+
+    FOREIGN KEY (company_id)
+        REFERENCES companies(id)
+        ON DELETE CASCADE
+);
+
+
+
+USE finnserv;
+
+ALTER TABLE companies
+    DROP COLUMN financial_year_start,
+    DROP COLUMN financial_year_end;
+
+
+

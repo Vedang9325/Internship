@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+require_once __DIR__ . '/flash.php';
+
 if (!isset($_SESSION['user_id'])) {
     header('Location: ' . BASE_URL . 'auth/login.php');
     exit;
@@ -74,6 +76,14 @@ $pageTitle = $pageTitle ?? 'Dashboard';
             <div class="nav-section">
                 MASTERS
             </div>
+
+            <a
+                href="<?= BASE_URL ?>company/"
+                class="nav-link"
+            >
+                <span>▣</span>
+                Company
+            </a>
 
             <a href="#" class="nav-link">
                 <span>◉</span>
@@ -165,6 +175,7 @@ $pageTitle = $pageTitle ?? 'Dashboard';
                 </div>
 
                 <div class="topbar-company">
+
                     Company ID:
                     <?= (int) $_SESSION['company_id'] ?>
 
@@ -209,4 +220,6 @@ $pageTitle = $pageTitle ?? 'Dashboard';
 
         <!-- Page Content -->
 
-        <main class="content"></main>
+        <main class="content">
+
+            <?php require_once __DIR__ . '/flash-display.php'; ?>
