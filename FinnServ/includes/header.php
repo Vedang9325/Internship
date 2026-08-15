@@ -3,14 +3,19 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/flash.php';
+require_once __DIR__ . '/context.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: ' . BASE_URL . 'auth/login.php');
     exit;
 }
 
-$pageTitle = $pageTitle ?? 'Dashboard';
+loadCompanyContext(
+    $pdo,
+    (int) $_SESSION['company_id']
+);
 
+$pageTitle = $pageTitle ?? 'Dashboard';
 ?>
 
 <!DOCTYPE html>
@@ -73,32 +78,40 @@ $pageTitle = $pageTitle ?? 'Dashboard';
             </a>
 
 
-            <div class="nav-section">
-                MASTERS
-            </div>
+ <div class="nav-section">
+    MASTERS
+</div>
 
-            <a
-                href="<?= BASE_URL ?>company/"
-                class="nav-link"
-            >
-                <span>▣</span>
-                Company
-            </a>
+<a
+    href="<?= BASE_URL ?>company/"
+    class="nav-link"
+>
+    <span>▣</span>
+    Company
+</a>
 
-            <a href="#" class="nav-link">
-                <span>◉</span>
-                Ledgers
-            </a>
+<a
+    href="<?= BASE_URL ?>financial-year/"
+    class="nav-link"
+>
+    <span>◷</span>
+    Financial Years
+</a>
 
-            <a href="#" class="nav-link">
-                <span>◉</span>
-                Groups
-            </a>
+<a href="#" class="nav-link">
+    <span>◉</span>
+    Ledgers
+</a>
 
-            <a href="#" class="nav-link">
-                <span>◉</span>
-                Stock Items
-            </a>
+<a href="#" class="nav-link">
+    <span>◉</span>
+    Groups
+</a>
+
+<a href="#" class="nav-link">
+    <span>◉</span>
+    Stock Items
+</a>
 
 
             <div class="nav-section">
@@ -176,15 +189,16 @@ $pageTitle = $pageTitle ?? 'Dashboard';
 
                 <div class="topbar-company">
 
-                    Company ID:
-                    <?= (int) $_SESSION['company_id'] ?>
+<?= htmlspecialchars(
+    $_SESSION['company_name'] ?? 'Company'
+) ?>
 
-                    &nbsp; | &nbsp;
+&nbsp; | &nbsp;
 
-                    FY:
-                    <?= htmlspecialchars(
-                        $_SESSION['financial_year_name'] ?? 'N/A'
-                    ) ?>
+FY:
+<?= htmlspecialchars(
+    $_SESSION['financial_year_name'] ?? 'N/A'
+) ?>
 
                 </div>
 
