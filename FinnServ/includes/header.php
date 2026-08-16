@@ -2,21 +2,26 @@
 
 declare(strict_types=1);
 
+// Load flash messages and company context helpers.
 require_once __DIR__ . '/flash.php';
 require_once __DIR__ . '/context.php';
 
+// Auth Guard: Ensure user is logged in before rendering the header templates.
 if (!isset($_SESSION['user_id'])) {
     header('Location: ' . BASE_URL . 'auth/login.php');
     exit;
 }
 
+// Dynamically refresh the company name and accounting period dates from MySQL on every load.
 loadCompanyContext(
     $pdo,
     (int) $_SESSION['company_id']
 );
 
+// Fallback page title if not explicitly set by the calling view.
 $pageTitle = $pageTitle ?? 'Dashboard';
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -44,12 +49,13 @@ $pageTitle = $pageTitle ?? 'Dashboard';
 
 <body>
 
+<!-- The main viewport container using CSS flexbox layout -->
 <div class="app">
 
-    <!-- Sidebar -->
-
+    <!-- Sidebar navigation, similar to Tally's side menus -->
     <aside class="sidebar">
 
+        <!-- Top branding block -->
         <div class="brand">
 
             <div class="brand-name">
@@ -63,8 +69,10 @@ $pageTitle = $pageTitle ?? 'Dashboard';
         </div>
 
 
+        <!-- Navigation sections mapping to Tally's "Gateway of Tally" items -->
         <nav class="sidebar-nav">
 
+            <!-- General Overview / Dashboard -->
             <div class="nav-section">
                 MAIN
             </div>
@@ -76,6 +84,7 @@ $pageTitle = $pageTitle ?? 'Dashboard';
                 <span>⌂</span>
                 Dashboard
             </a>
+
 
 
  <div class="nav-section">

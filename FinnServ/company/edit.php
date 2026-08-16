@@ -2,12 +2,17 @@
 
 declare(strict_types=1);
 
+// Bootstrapping and session protection check.
 require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ . '/../includes/auth.php';
+
+// Include DB access functions (getCompany).
 require_once __DIR__ . '/repository.php';
 
+// Get target company identifier context.
 $companyId = (int) ($_SESSION['company_id'] ?? 1);
 
+// Pull existing settings info from database to pre-fill form fields.
 $company = getCompany($pdo, $companyId);
 
 if (!$company) {
@@ -18,6 +23,7 @@ $pageTitle = 'Edit Company';
 
 require_once __DIR__ . '/../includes/header.php';
 ?>
+
 
 <div class="page-header">
     <div>

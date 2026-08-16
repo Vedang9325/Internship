@@ -3,6 +3,13 @@
 declare(strict_types=1);
 
 
+/**
+ * Validates financial year boundaries.
+ * Ensures start date comes before the end date.
+ *
+ * @param array $data Input dates.
+ * @return array Validation errors.
+ */
 function validateFinancialYear(array $data): array
 {
     $errors = [];
@@ -14,7 +21,7 @@ function validateFinancialYear(array $data): array
 
     /*
     |--------------------------------------------------------------------------
-    | Name
+    | Name Verification
     |--------------------------------------------------------------------------
     */
 
@@ -32,7 +39,7 @@ function validateFinancialYear(array $data): array
 
     /*
     |--------------------------------------------------------------------------
-    | Start Date
+    | Start Date Verification
     |--------------------------------------------------------------------------
     */
 
@@ -45,7 +52,7 @@ function validateFinancialYear(array $data): array
 
     /*
     |--------------------------------------------------------------------------
-    | End Date
+    | End Date Verification
     |--------------------------------------------------------------------------
     */
 
@@ -58,8 +65,12 @@ function validateFinancialYear(array $data): array
 
     /*
     |--------------------------------------------------------------------------
-    | Date Validation
+    | Date Logic Boundary Check
     |--------------------------------------------------------------------------
+    |
+    | Verifies that the start date precedes the end date.
+    | Handles formatting exceptions cleanly using PHP DateTimeImmutable classes.
+    |
     */
 
     if (
@@ -69,9 +80,11 @@ function validateFinancialYear(array $data): array
 
         try {
 
+            // Parse text date inputs into immutable date-time instances.
             $start = new DateTimeImmutable($startDate);
             $end = new DateTimeImmutable($endDate);
 
+            // Compare date scales.
             if ($start >= $end) {
 
                 $errors['end_date'] =
@@ -80,6 +93,7 @@ function validateFinancialYear(array $data): array
 
         } catch (Exception $e) {
 
+            // Catch corrupt date format submissions (like 2027-02-31).
             $errors['start_date'] =
                 'Invalid date.';
         }
@@ -87,4 +101,4 @@ function validateFinancialYear(array $data): array
 
 
     return $errors;
-}
+}

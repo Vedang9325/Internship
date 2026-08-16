@@ -2,14 +2,18 @@
 
 declare(strict_types=1);
 
+// Initialize app config database connection and check if user session is active.
 require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ . '/../includes/auth.php';
 
+// Configure page parameters. Will render in title tags and top banner.
 $pageTitle = 'Dashboard';
 
+// Include central layout framework. Loads active company/FY details from database.
 require_once __DIR__ . '/../includes/header.php';
 
 ?>
+
 
 <section class="dashboard-welcome">
 

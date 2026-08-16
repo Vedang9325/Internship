@@ -2,13 +2,18 @@
 
 declare(strict_types=1);
 
+// Bootstrapping configurations and checking session security constraints.
 require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ . '/../includes/auth.php';
 require_once __DIR__ . '/../includes/flash.php';
+
+// Include repository helper queries (getFinancialYears).
 require_once __DIR__ . '/repository.php';
 
+// Retrieve active company context from session scope.
 $companyId = (int) $_SESSION['company_id'];
 
+// Retrieve a list of all historical and future financial year periods configured for this company.
 $financialYears = getFinancialYears(
     $pdo,
     $companyId
@@ -16,9 +21,11 @@ $financialYears = getFinancialYears(
 
 $pageTitle = 'Financial Years';
 
+// Includes layouts. Displays active company name and period name in navigation menus.
 require_once __DIR__ . '/../includes/header.php';
 
 ?>
+
 
 <div class="page-header">
 

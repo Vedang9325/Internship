@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+// Load base configuration and verify session security status.
 require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ . '/../includes/auth.php';
 
@@ -9,8 +10,10 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+// Retrieve active company ID stored in session during login/context load.
 $companyId = $_SESSION['company_id'] ?? 1;
 
+// Prepare statement to query metadata details for the current company context.
 $stmt = $pdo->prepare("
     SELECT
         id,
@@ -38,8 +41,10 @@ if (!$company) {
 
 $pageTitle = 'Company Profile';
 
+// Includes layouts. Displays company name/period context dynamically in navigation panels.
 require_once __DIR__ . '/../includes/header.php';
 ?>
+
 
 <div class="page-header">
     <div>

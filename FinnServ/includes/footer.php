@@ -1,9 +1,9 @@
-        </main>
+        </main> <!-- Closes the private page .content view -->
 
-    </div>
+    </div> <!-- Closes the main page container .main-area -->
 
-</div>
+</div> <!-- Closes the global .app viewport wrapper -->
 
 </body>
 
-</html>
+</html>

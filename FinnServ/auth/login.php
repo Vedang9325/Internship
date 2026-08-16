@@ -22,12 +22,13 @@ $error = '';
 
 /*
 |--------------------------------------------------------------------------
-| Handle Login
+| Handle Login POST Submission
 |--------------------------------------------------------------------------
 */
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+    // Sanitize user inputs to prevent spacing typos.
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
@@ -38,6 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } else {
 
+        // Use a parameterized prepared query to look up user. Defends against SQL injection.
         $stmt = $pdo->prepare("
             SELECT
                 id,
@@ -59,20 +61,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch();
 
 
+        // Verify username existence and match password with secure hash verify.
         if (!$user || !password_verify($password, $user['password'])) {
 
             $error = 'Invalid username or password.';
 
         } elseif ((int)$user['is_active'] !== 1) {
 
+            // Account status guard: blocks users flagged as inactive by admins.
             $error = 'This account is inactive.';
 
         } else {
 
             /*
             |--------------------------------------------------------------------------
-            | Prevent Session Fixation
+            | Prevent Session Fixation Attacks
             |--------------------------------------------------------------------------
+            |
+            | Deletes old session ID files on server and issues a new session cookie identifier.
+            | This blocks session hijacking.
+            |
             */
 
             session_regenerate_id(true);
@@ -80,8 +88,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             /*
             |--------------------------------------------------------------------------
-            | Store Authenticated User
+            | Store Authenticated User details in Session
             |--------------------------------------------------------------------------
+            |
+            | Used globally to track the user identity, roles, and which company data scope
+            | the logged-in user owns.
+            |
             */
 
             $_SESSION['user_id'] = (int)$user['id'];
@@ -95,6 +107,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             |--------------------------------------------------------------------------
             | Get Active Financial Year
             |--------------------------------------------------------------------------
+            |
+            | Fetches the current active accounting period configured for this company.
+            | Maps to opening a selected Company and verifying the active period dates in Tally.
+            |
             */
 
             $fyStmt = $pdo->prepare("
@@ -127,11 +143,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
 
+            // Redirect to dashboard (Gateway of Tally) once logged in.
             header('Location: ' . BASE_URL . 'dashboard/');
             exit;
         }
     }
 }
+
 
 ?>
 

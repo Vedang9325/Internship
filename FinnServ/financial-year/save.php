@@ -38,7 +38,7 @@ $companyId = (int) $_SESSION['company_id'];
 
 /*
 |--------------------------------------------------------------------------
-| Form Data
+| Form Data Sanitization
 |--------------------------------------------------------------------------
 */
 
@@ -58,12 +58,13 @@ $data = [
 
 /*
 |--------------------------------------------------------------------------
-| Validate Input
+| Validate Input Range Boundaries
 |--------------------------------------------------------------------------
 */
 
 $errors = validateFinancialYear($data);
 
+// If inputs fail date rules, store details in session cache and redirect back (PRG).
 if (!empty($errors)) {
 
     $_SESSION['financial_year_errors'] = $errors;
@@ -82,8 +83,11 @@ if (!empty($errors)) {
 
 /*
 |--------------------------------------------------------------------------
-| Duplicate Check
+| Duplicate Name Check
 |--------------------------------------------------------------------------
+|
+| Prevents adding multiple periods with identical labels.
+|
 */
 
 if (
@@ -94,6 +98,7 @@ if (
     )
 ) {
 
+    // Show warning banner to the user.
     setFlash(
         'error',
         'A financial year with this name already exists.'
@@ -113,7 +118,7 @@ if (
 
 /*
 |--------------------------------------------------------------------------
-| Create Financial Year
+| Database Insert execution
 |--------------------------------------------------------------------------
 */
 
@@ -125,11 +130,13 @@ try {
         $data
     );
 
+    // Set success banner message.
     setFlash(
         'success',
         'Financial year created successfully.'
     );
 
+    // Redirect to list index page on success.
     header(
         'Location: ' .
         BASE_URL .
@@ -140,6 +147,7 @@ try {
 
 } catch (Throwable $e) {
 
+    // Catch database connection failures or integrity checks.
     setFlash(
         'error',
         'Unable to create financial year.'
@@ -152,4 +160,4 @@ try {
     );
 
     exit;
-}
+}
