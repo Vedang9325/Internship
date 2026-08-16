@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-// Bootstrapping and authentication verify checks.
 require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ . '/../includes/auth.php';
 
-// PRG Pattern: Retrieve validation errors and old input values if redirecting from save.php.
 $errors = $_SESSION['financial_year_errors'] ?? [];
 $old = $_SESSION['financial_year_old'] ?? [];
 

@@ -5,11 +5,6 @@ declare(strict_types=1);
 require_once __DIR__ . '/../includes/init.php';
 
 
-/*
-|--------------------------------------------------------------------------
-| Redirect Already Logged-In Users
-|--------------------------------------------------------------------------
-*/
 
 if (isset($_SESSION['user_id'])) {
     header('Location: ' . BASE_URL . 'dashboard/');
@@ -20,15 +15,10 @@ if (isset($_SESSION['user_id'])) {
 $error = '';
 
 
-/*
-|--------------------------------------------------------------------------
-| Handle Login POST Submission
-|--------------------------------------------------------------------------
-*/
+// Handle Login POST Submission
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // Sanitize user inputs to prevent spacing typos.
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
@@ -39,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     } else {
 
-        // Use a parameterized prepared query to look up user. Defends against SQL injection.
         $stmt = $pdo->prepare("
             SELECT
                 id,
@@ -68,33 +57,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         } elseif ((int)$user['is_active'] !== 1) {
 
-            // Account status guard: blocks users flagged as inactive by admins.
             $error = 'This account is inactive.';
 
         } else {
 
-            /*
-            |--------------------------------------------------------------------------
-            | Prevent Session Fixation Attacks
-            |--------------------------------------------------------------------------
-            |
-            | Deletes old session ID files on server and issues a new session cookie identifier.
-            | This blocks session hijacking.
-            |
-            */
 
             session_regenerate_id(true);
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | Store Authenticated User details in Session
-            |--------------------------------------------------------------------------
-            |
-            | Used globally to track the user identity, roles, and which company data scope
-            | the logged-in user owns.
-            |
-            */
 
             $_SESSION['user_id'] = (int)$user['id'];
             $_SESSION['company_id'] = (int)$user['company_id'];
@@ -103,15 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['role'] = $user['role'];
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | Get Active Financial Year
-            |--------------------------------------------------------------------------
-            |
-            | Fetches the current active accounting period configured for this company.
-            | Maps to opening a selected Company and verifying the active period dates in Tally.
-            |
-            */
+            // Get Active Financial Year
 
             $fyStmt = $pdo->prepare("
                 SELECT
@@ -143,7 +105,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
 
-            // Redirect to dashboard (Gateway of Tally) once logged in.
             header('Location: ' . BASE_URL . 'dashboard/');
             exit;
         }

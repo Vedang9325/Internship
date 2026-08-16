@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-// Bootstrapping and session protection check.
 require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ . '/../includes/auth.php';
 

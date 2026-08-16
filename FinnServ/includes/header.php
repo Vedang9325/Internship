@@ -2,11 +2,9 @@
 
 declare(strict_types=1);
 
-// Load flash messages and company context helpers.
 require_once __DIR__ . '/flash.php';
 require_once __DIR__ . '/context.php';
 
-// Auth Guard: Ensure user is logged in before rendering the header templates.
 if (!isset($_SESSION['user_id'])) {
     header('Location: ' . BASE_URL . 'auth/login.php');
     exit;
@@ -18,7 +16,6 @@ loadCompanyContext(
     (int) $_SESSION['company_id']
 );
 
-// Fallback page title if not explicitly set by the calling view.
 $pageTitle = $pageTitle ?? 'Dashboard';
 ?>
 

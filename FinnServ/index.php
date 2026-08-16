@@ -1,9 +1,7 @@
 <?php
 
-// Include initial bootstrap scripts (configurations, DB context, and session check).
 require_once __DIR__ . '/includes/init.php';
 
-// Diagnostics Check: Verify database is fully functional by fetching
 // company #1 along with its current active financial year period.
 $stmt = $pdo->query("
     SELECT
@@ -17,7 +15,6 @@ $stmt = $pdo->query("
     LIMIT 1
 ");
 
-// Fetch the result row as an associative array.
 $company = $stmt->fetch();
 
 ?>

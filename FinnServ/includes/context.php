@@ -2,15 +2,7 @@
 
 declare(strict_types=1);
 
-/**
- * Loads the active company name and its active financial year dates into session variables.
- * This runs on every private page load, matching Tally's behavior of showing the active
- * company and accounting period details.
- *
- * @param PDO $pdo The active database connection resource.
- * @param int $companyId The ID of the company to query context for.
- * @throws RuntimeException If company or active financial year information is missing.
- */
+// Loads the active company name and its active financial year dates into session variables.
 function loadCompanyContext(PDO $pdo, int $companyId): void
 {
     // Step 1: Query the database to retrieve company details.
@@ -76,4 +68,4 @@ function loadCompanyContext(PDO $pdo, int $companyId): void
 
     $_SESSION['financial_year_end'] =
         $financialYear['end_date'];
-}
+}

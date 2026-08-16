@@ -10,10 +10,8 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Retrieve active company ID stored in session during login/context load.
 $companyId = $_SESSION['company_id'] ?? 1;
 
-// Prepare statement to query metadata details for the current company context.
 $stmt = $pdo->prepare("
     SELECT
         id,
@@ -41,7 +39,7 @@ if (!$company) {
 
 $pageTitle = 'Company Profile';
 
-// Includes layouts. Displays company name/period context dynamically in navigation panels.
+// Includes layouts.
 require_once __DIR__ . '/../includes/header.php';
 ?>
 

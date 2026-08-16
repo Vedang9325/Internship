@@ -2,10 +2,8 @@
 
 declare(strict_types=1);
 
-// Include the flash utility functions.
 require_once __DIR__ . '/flash.php';
 
-// Retrieve any active notification message stored in the session context.
 $flash = getFlash();
 
 ?>

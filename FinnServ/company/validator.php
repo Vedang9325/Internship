@@ -2,12 +2,7 @@
 
 declare(strict_types=1);
 
-/**
- * Validates company data rules for business compliance.
- *
- * @param array $data Input payload associative array.
- * @return array Validation errors where keys match input names.
- */
+// Validates company data rules for business compliance.
 function validateCompany(array $data): array
 {
     $errors = [];
@@ -45,4 +40,4 @@ function validateCompany(array $data): array
     }
 
     return $errors;
-}
+}

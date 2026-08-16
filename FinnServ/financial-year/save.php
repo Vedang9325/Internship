@@ -9,11 +9,6 @@ require_once __DIR__ . '/repository.php';
 require_once __DIR__ . '/validator.php';
 
 
-/*
-|--------------------------------------------------------------------------
-| Request Method
-|--------------------------------------------------------------------------
-*/
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
@@ -27,20 +22,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| Current Company
-|--------------------------------------------------------------------------
-*/
 
 $companyId = (int) $_SESSION['company_id'];
 
 
-/*
-|--------------------------------------------------------------------------
-| Form Data Sanitization
-|--------------------------------------------------------------------------
-*/
 
 $data = [
 
@@ -56,15 +41,10 @@ $data = [
 ];
 
 
-/*
-|--------------------------------------------------------------------------
-| Validate Input Range Boundaries
-|--------------------------------------------------------------------------
-*/
+// Validate Input Range Boundaries
 
 $errors = validateFinancialYear($data);
 
-// If inputs fail date rules, store details in session cache and redirect back (PRG).
 if (!empty($errors)) {
 
     $_SESSION['financial_year_errors'] = $errors;
@@ -81,14 +61,6 @@ if (!empty($errors)) {
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| Duplicate Name Check
-|--------------------------------------------------------------------------
-|
-| Prevents adding multiple periods with identical labels.
-|
-*/
 
 if (
     financialYearExists(
@@ -98,7 +70,6 @@ if (
     )
 ) {
 
-    // Show warning banner to the user.
     setFlash(
         'error',
         'A financial year with this name already exists.'
@@ -116,11 +87,6 @@ if (
 }
 
 
-/*
-|--------------------------------------------------------------------------
-| Database Insert execution
-|--------------------------------------------------------------------------
-*/
 
 try {
 
@@ -130,13 +96,11 @@ try {
         $data
     );
 
-    // Set success banner message.
     setFlash(
         'success',
         'Financial year created successfully.'
     );
 
-    // Redirect to list index page on success.
     header(
         'Location: ' .
         BASE_URL .
@@ -147,7 +111,6 @@ try {
 
 } catch (Throwable $e) {
 
-    // Catch database connection failures or integrity checks.
     setFlash(
         'error',
         'Unable to create financial year.'
@@ -160,4 +123,4 @@ try {
     );
 
     exit;
-}
+}

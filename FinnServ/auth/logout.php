@@ -6,16 +6,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../includes/init.php';
 
 
-/*
-|--------------------------------------------------------------------------
-| Logout Procedure
-|--------------------------------------------------------------------------
-|
-| Clears all active variables from session memory, deletes the session
-| identifier cookie in the browser, destroys the server session file,
-| and redirects to the login screen. Matches the 'Shut Company' action.
-|
-*/
+// Logout Procedure
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -41,6 +32,5 @@ if (ini_get("session.use_cookies")) {
 // Destroy session data on the server file structure.
 session_destroy();
 
-// Redirect user back to login page.
 header('Location: ' . BASE_URL . 'auth/login.php');
 exit;
