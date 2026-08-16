@@ -1,0 +1,415 @@
+/* =========================================================
+   FINNSERV GATEWAY
+   TALLY-INSPIRED ACCOUNTING INTERFACE
+   ========================================================= */
+
+.gateway-page {
+  margin: 0;
+
+  background: #ffffff;
+
+  color: #111827;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  overflow: hidden;
+}
+
+.gateway-app {
+  min-height: 100vh;
+
+  display: flex;
+
+  flex-direction: column;
+}
+
+/* =========================================================
+   TOP BAR
+   ========================================================= */
+
+.gateway-topbar {
+  height: 70px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 28px;
+
+  padding: 0 18px;
+
+  background: #123b38;
+
+  color: #ffffff;
+}
+
+.gateway-brand {
+  min-width: 185px;
+}
+
+.gateway-logo {
+  font-size: 25px;
+
+  font-weight: 700;
+
+  letter-spacing: -0.5px;
+}
+
+.gateway-version {
+  margin-top: 2px;
+
+  color: #c7deda;
+
+  font-size: 11px;
+}
+
+.gateway-shortcuts {
+  flex: 1;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 24px;
+}
+
+.gateway-shortcuts button,
+.gateway-title-actions button {
+  border: 0;
+
+  background: transparent;
+
+  color: inherit;
+
+  font-family: inherit;
+
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+.gateway-shortcuts button:hover {
+  color: #d9f99d;
+}
+
+.gateway-logout {
+  color: #ffffff;
+
+  font-size: 12px;
+
+  text-decoration: none;
+}
+
+/* =========================================================
+   TITLE BAR
+   ========================================================= */
+
+.gateway-titlebar {
+  min-height: 30px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 0 8px;
+
+  background: #8cc8e8;
+
+  color: #082f49;
+
+  font-size: 13px;
+}
+
+.gateway-title-actions {
+  display: flex;
+
+  align-items: center;
+
+  gap: 2px;
+}
+
+.gateway-title-actions button {
+  padding: 4px 12px;
+
+  color: #075985;
+}
+
+.gateway-title-actions button:hover {
+  background: #dff3ff;
+}
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.gateway-main {
+  flex: 1;
+
+  display: grid;
+
+  grid-template-columns: minmax(0, 1fr) 390px;
+
+  min-height: 0;
+}
+
+/* =========================================================
+   INFORMATION PANEL
+   ========================================================= */
+
+.gateway-information {
+  padding: 34px 30px;
+
+  border-right: 1px solid #d1d5db;
+
+  overflow-y: auto;
+}
+
+.gateway-info-block {
+  margin-bottom: 30px;
+}
+
+.gateway-info-label {
+  margin-bottom: 6px;
+
+  color: #2563eb;
+
+  font-size: 12px;
+
+  font-weight: 500;
+
+  letter-spacing: 0.3px;
+}
+
+.gateway-info-value {
+  color: #111827;
+
+  font-size: 14px;
+
+  font-weight: 600;
+}
+
+.gateway-date-block {
+  text-align: right;
+}
+
+.gateway-company-row {
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  border-top: 1px solid #93c5fd;
+
+  padding-top: 7px;
+}
+
+.gateway-company-name {
+  color: #111827;
+
+  font-size: 15px;
+
+  font-weight: 700;
+}
+
+.gateway-entry-status {
+  text-align: right;
+}
+
+.gateway-context-box {
+  display: grid;
+
+  grid-template-columns: repeat(3, 1fr);
+
+  gap: 12px;
+
+  max-width: 700px;
+
+  margin-top: 45px;
+
+  padding: 16px;
+
+  border: 1px solid #d1d5db;
+
+  background: #f8fafc;
+}
+
+.gateway-context-box div {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 5px;
+}
+
+.gateway-context-box span {
+  color: #6b7280;
+
+  font-size: 11px;
+
+  text-transform: uppercase;
+}
+
+.gateway-context-box strong {
+  font-size: 13px;
+}
+
+/* =========================================================
+   GATEWAY MENU
+   ========================================================= */
+
+.gateway-menu {
+  width: 390px;
+
+  margin: 110px auto 30px;
+
+  align-self: start;
+
+  border: 1px solid #93c5fd;
+
+  background: #e0f2fe;
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.gateway-menu-heading {
+  padding: 7px 12px;
+
+  text-align: center;
+
+  background: #2563a6;
+
+  color: #ffffff;
+
+  font-size: 14px;
+}
+
+.gateway-section {
+  padding: 14px 0 4px;
+}
+
+.gateway-section-title {
+  margin-bottom: 6px;
+
+  padding: 0 14px;
+
+  color: #60a5fa;
+
+  font-size: 12px;
+}
+
+.gateway-menu-item {
+  display: block;
+
+  padding: 3px 14px;
+
+  color: #111827;
+
+  font-size: 14px;
+
+  text-decoration: none;
+}
+
+.gateway-menu-item:hover {
+  background: #fbbf24;
+
+  color: #111827;
+}
+
+.gateway-menu-item.disabled {
+  color: #374151;
+}
+
+.gateway-quit {
+  display: block;
+
+  margin-top: 16px;
+
+  padding: 10px 14px 14px;
+
+  color: #111827;
+
+  font-size: 14px;
+
+  text-decoration: none;
+}
+
+.gateway-quit:hover {
+  color: #b91c1c;
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.gateway-footer {
+  height: 30px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  padding: 0 16px;
+
+  border-top: 1px solid #d1d5db;
+
+  color: #6b7280;
+
+  font-size: 11px;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1000px) {
+  .gateway-shortcuts {
+    display: none;
+  }
+
+  .gateway-main {
+    grid-template-columns: 1fr;
+  }
+
+  .gateway-information {
+    border-right: none;
+  }
+
+  .gateway-menu {
+    width: min(390px, calc(100% - 30px));
+
+    margin: 20px auto 30px;
+  }
+}
+
+@media (max-width: 600px) {
+  .gateway-topbar {
+    height: 58px;
+  }
+
+  .gateway-brand {
+    min-width: 0;
+  }
+
+  .gateway-logo {
+    font-size: 21px;
+  }
+
+  .gateway-company-row {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .gateway-date-block,
+  .gateway-entry-status {
+    text-align: left;
+  }
+
+  .gateway-context-box {
+    grid-template-columns: 1fr;
+  }
+}

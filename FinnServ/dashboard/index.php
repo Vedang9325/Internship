@@ -4,231 +4,463 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ . '/../includes/auth.php';
+require_once __DIR__ . '/../includes/context.php';
 
-$pageTitle = 'Dashboard';
+loadCompanyContext(
+    $pdo,
+    (int) $_SESSION['company_id']
+);
 
-require_once __DIR__ . '/../includes/header.php';
+$companyName = $_SESSION['company_name'] ?? 'Company';
+$financialYearName = $_SESSION['financial_year_name'] ?? 'N/A';
+$financialYearStart = $_SESSION['financial_year_start'] ?? null;
+$financialYearEnd = $_SESSION['financial_year_end'] ?? null;
+
+$currentDate = date('l, d-M-Y');
 
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
 
-<section class="dashboard-welcome">
+<head>
 
-    <h1>
-        Welcome back,
-        <?= htmlspecialchars($_SESSION['user_name']) ?>
-    </h1>
+    <meta charset="UTF-8">
 
-    <p>
-        Here's an overview of your FinnServ accounting environment.
-    </p>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-</section>
+    <title>
+        Gateway of FinnServ
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="<?= BASE_URL ?>assets/css/style.css"
+    >
+
+    <link
+        rel="stylesheet"
+        href="<?= BASE_URL ?>assets/css/gateway.css"
+    >
+
+</head>
 
 
-<!-- Statistics -->
+<body class="gateway-page">
 
-<section class="stats-grid">
+<div class="gateway-app">
 
-    <div class="card">
 
-        <div class="stat-label">
-            COMPANY
+    <!-- =====================================================
+         TOP HEADER
+         ===================================================== -->
+
+    <header class="gateway-topbar">
+
+        <div class="gateway-brand">
+
+            <div class="gateway-logo">
+                FinnServ
+            </div>
+
+            <div class="gateway-version">
+                Accounting & Business Management
+            </div>
+
         </div>
 
-        <div class="stat-value">
-            #<?= (int) $_SESSION['company_id'] ?>
-        </div>
 
-        <div class="stat-description">
-            Active company
+        <nav class="gateway-shortcuts">
+
+            <button type="button" data-shortcut="company">
+                <u>K</u>: Company
+            </button>
+
+            <button type="button" data-shortcut="data">
+                <u>Y</u>: Data
+            </button>
+
+            <button type="button" data-shortcut="exchange">
+                <u>Z</u>: Exchange
+            </button>
+
+            <button type="button" data-shortcut="goto">
+                <u>G</u>: Go To
+            </button>
+
+            <button type="button" data-shortcut="import">
+                <u>O</u>: Import
+            </button>
+
+            <button type="button" data-shortcut="export">
+                <u>E</u>: Export
+            </button>
+
+            <button type="button" data-shortcut="share">
+                <u>M</u>: Share
+            </button>
+
+            <button type="button" data-shortcut="print">
+                <u>P</u>: Print
+            </button>
+
+        </nav>
+
+
+        <a
+            href="<?= BASE_URL ?>auth/logout.php"
+            class="gateway-logout"
+        >
+            Logout
+        </a>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         PAGE TITLE
+         ===================================================== -->
+
+    <div class="gateway-titlebar">
+
+        <strong>
+            Gateway of FinnServ
+        </strong>
+
+        <div class="gateway-title-actions">
+
+            <button
+                type="button"
+                data-shortcut="date"
+            >
+                F2: Date
+            </button>
+
+            <button
+                type="button"
+                data-shortcut="company"
+            >
+                F3: Company
+            </button>
+
+            <button
+                type="button"
+                data-shortcut="help"
+            >
+                F1: Help
+            </button>
+
         </div>
 
     </div>
 
 
-    <div class="card">
 
-        <div class="stat-label">
-            FINANCIAL YEAR
-        </div>
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
 
-        <div class="stat-value">
-            <?= htmlspecialchars(
-                $_SESSION['financial_year_name'] ?? 'N/A'
-            ) ?>
-        </div>
-
-        <div class="stat-description">
-            Current accounting period
-        </div>
-
-    </div>
+    <main class="gateway-main">
 
 
-    <div class="card">
+        <!-- =================================================
+             LEFT INFORMATION PANEL
+             ================================================= -->
 
-        <div class="stat-label">
-            USER ROLE
-        </div>
-
-        <div class="stat-value">
-            <?= htmlspecialchars($_SESSION['role']) ?>
-        </div>
-
-        <div class="stat-description">
-            Current access level
-        </div>
-
-    </div>
+        <section class="gateway-information">
 
 
-    <div class="card">
+            <div class="gateway-info-block">
 
-        <div class="stat-label">
-            SYSTEM
-        </div>
+                <div class="gateway-info-label">
+                    CURRENT PERIOD
+                </div>
 
-        <div class="stat-value">
-            v<?= htmlspecialchars(APP_VERSION) ?>
-        </div>
+                <div class="gateway-info-value">
 
-        <div class="stat-description">
-            FinnServ application
-        </div>
+                    <?php if ($financialYearStart && $financialYearEnd): ?>
 
-    </div>
+                        <?= htmlspecialchars(
+                            date(
+                                'd-M-y',
+                                strtotime($financialYearStart)
+                            )
+                        ) ?>
 
-</section>
+                        to
 
+                        <?= htmlspecialchars(
+                            date(
+                                'd-M-y',
+                                strtotime($financialYearEnd)
+                            )
+                        ) ?>
 
-<!-- Dashboard Panels -->
+                    <?php else: ?>
 
-<section class="dashboard-grid">
+                        No Financial Year
 
+                    <?php endif; ?>
 
-    <!-- Quick Actions -->
+                </div>
 
-    <div class="card">
-
-        <div class="card-header">
-
-            <h2>
-                Quick Actions
-            </h2>
-
-            <span>
-                Frequently used
-            </span>
-
-        </div>
+            </div>
 
 
-        <div class="quick-actions">
 
-            <a href="#" class="quick-action">
+            <div class="gateway-info-block gateway-date-block">
 
-                <strong>
-                    Create Ledger
-                </strong>
+                <div class="gateway-info-label">
+                    CURRENT DATE
+                </div>
 
-                <span>
-                    Add a new account ledger
-                </span>
+                <div class="gateway-info-value">
+                    <?= htmlspecialchars($currentDate) ?>
+                </div>
 
+            </div>
+
+
+
+            <div class="gateway-company-row">
+
+                <div>
+
+                    <div class="gateway-info-label">
+                        NAME OF COMPANY
+                    </div>
+
+                    <div class="gateway-company-name">
+                        <?= htmlspecialchars($companyName) ?>
+                    </div>
+
+                </div>
+
+
+                <div class="gateway-entry-status">
+
+                    <div class="gateway-info-label">
+                        DATE OF LAST ENTRY
+                    </div>
+
+                    <div class="gateway-company-name">
+                        No Vouchers Entered
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="gateway-context-box">
+
+                <div>
+                    <span>Financial Year</span>
+                    <strong>
+                        <?= htmlspecialchars($financialYearName) ?>
+                    </strong>
+                </div>
+
+                <div>
+                    <span>User</span>
+                    <strong>
+                        <?= htmlspecialchars(
+                            $_SESSION['user_name'] ?? 'User'
+                        ) ?>
+                    </strong>
+                </div>
+
+                <div>
+                    <span>Role</span>
+                    <strong>
+                        <?= htmlspecialchars(
+                            $_SESSION['role'] ?? 'User'
+                        ) ?>
+                    </strong>
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             GATEWAY MENU
+             ================================================= -->
+
+        <aside class="gateway-menu">
+
+            <div class="gateway-menu-heading">
+                Gateway of FinnServ
+            </div>
+
+
+            <!-- MASTERS -->
+
+            <div class="gateway-section">
+
+                <div class="gateway-section-title">
+                    MASTERS
+                </div>
+
+                <a
+                    href="<?= BASE_URL ?>company/"
+                    class="gateway-menu-item"
+                >
+                    Company
+                </a>
+
+                <a
+                    href="<?= BASE_URL ?>financial-year/"
+                    class="gateway-menu-item"
+                >
+                    Financial Years
+                </a>
+
+                <a
+                    href="#"
+                    class="gateway-menu-item disabled"
+                >
+                    Chart of Accounts
+                </a>
+
+            </div>
+
+
+
+            <!-- TRANSACTIONS -->
+
+            <div class="gateway-section">
+
+                <div class="gateway-section-title">
+                    TRANSACTIONS
+                </div>
+
+                <a
+                    href="#"
+                    class="gateway-menu-item disabled"
+                >
+                    Vouchers
+                </a>
+
+                <a
+                    href="#"
+                    class="gateway-menu-item disabled"
+                >
+                    Day Book
+                </a>
+
+            </div>
+
+
+
+            <!-- UTILITIES -->
+
+            <div class="gateway-section">
+
+                <div class="gateway-section-title">
+                    UTILITIES
+                </div>
+
+                <a
+                    href="#"
+                    class="gateway-menu-item disabled"
+                >
+                    Banking
+                </a>
+
+            </div>
+
+
+
+            <!-- REPORTS -->
+
+            <div class="gateway-section">
+
+                <div class="gateway-section-title">
+                    REPORTS
+                </div>
+
+                <a
+                    href="#"
+                    class="gateway-menu-item disabled"
+                >
+                    Balance Sheet
+                </a>
+
+                <a
+                    href="#"
+                    class="gateway-menu-item disabled"
+                >
+                    Profit &amp; Loss A/c
+                </a>
+
+                <a
+                    href="#"
+                    class="gateway-menu-item disabled"
+                >
+                    Stock Summary
+                </a>
+
+                <a
+                    href="#"
+                    class="gateway-menu-item disabled"
+                >
+                    Ratio Analysis
+                </a>
+
+                <a
+                    href="#"
+                    class="gateway-menu-item disabled"
+                >
+                    Dashboard
+                </a>
+
+            </div>
+
+
+            <a
+                href="<?= BASE_URL ?>auth/logout.php"
+                class="gateway-quit"
+            >
+                Quit
             </a>
 
+        </aside>
 
-            <a href="#" class="quick-action">
-
-                <strong>
-                    Payment
-                </strong>
-
-                <span>
-                    Record a payment voucher
-                </span>
-
-            </a>
+    </main>
 
 
-            <a href="#" class="quick-action">
 
-                <strong>
-                    Receipt
-                </strong>
+    <!-- =====================================================
+         FOOTER
+         ===================================================== -->
 
-                <span>
-                    Record a receipt voucher
-                </span>
+    <footer class="gateway-footer">
 
-            </a>
+        <span>
+            FinnServ v1.0.0
+        </span>
 
+        <span>
+            Accounting &amp; Business Management System
+        </span>
 
-            <a href="#" class="quick-action">
+    </footer>
 
-                <strong>
-                    Sales Invoice
-                </strong>
-
-                <span>
-                    Create a sales transaction
-                </span>
-
-            </a>
-
-        </div>
-
-    </div>
+</div>
 
 
-    <!-- System Information -->
+<script
+    src="<?= BASE_URL ?>assets/js/gateway.js"
+></script>
 
-    <div class="card">
+</body>
 
-        <div class="card-header">
-
-            <h2>
-                Current Session
-            </h2>
-
-        </div>
-
-
-        <p class="stat-description">
-            Logged in as
-        </p>
-
-        <p style="margin-bottom: 15px; font-weight: 600;">
-            <?= htmlspecialchars($_SESSION['user_name']) ?>
-        </p>
-
-
-        <p class="stat-description">
-            Financial Year
-        </p>
-
-        <p style="margin-bottom: 15px; font-weight: 600;">
-            <?= htmlspecialchars(
-                $_SESSION['financial_year_name'] ?? 'N/A'
-            ) ?>
-        </p>
-
-
-        <p class="stat-description">
-            Access Role
-        </p>
-
-        <p style="font-weight: 600;">
-            <?= htmlspecialchars($_SESSION['role']) ?>
-        </p>
-
-    </div>
-
-</section>
-
-<?php
-
-require_once __DIR__ . '/../includes/footer.php';
-
-?>
+</html>
