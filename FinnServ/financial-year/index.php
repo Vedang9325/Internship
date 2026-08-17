@@ -17,12 +17,59 @@ $financialYears = getFinancialYears(
     $companyId
 );
 
-$pageTitle = 'Financial Years';
-
-// Includes layouts.
-require_once __DIR__ . '/../includes/header.php';
+$companyName =
+    $_SESSION['company_name'] ?? 'Company';
 
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Years | FinnServ</title>
+    <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/style.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/gateway.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/company.css">
+</head>
+
+<body class="gateway-page">
+
+<div class="gateway-app">
+
+    <header class="gateway-topbar">
+        <div class="gateway-brand">
+            <div class="gateway-logo">FinnServ</div>
+            <div class="gateway-version">Accounting &amp; Business Management</div>
+        </div>
+
+        <nav class="gateway-shortcuts">
+            <a href="<?= BASE_URL ?>company/menu.php"><u>K</u>: Company</a>
+            <span><u>Y</u>: Data</span>
+            <span><u>Z</u>: Exchange</span>
+            <span><u>G</u>: Go To</span>
+            <span><u>O</u>: Import</span>
+            <span><u>E</u>: Export</span>
+            <span><u>M</u>: Share</span>
+            <span><u>P</u>: Print</span>
+        </nav>
+
+        <a href="<?= BASE_URL ?>auth/logout.php" class="gateway-logout">
+            Logout
+        </a>
+    </header>
+
+    <div class="gateway-titlebar">
+        <strong>Financial Years</strong>
+        <div class="gateway-title-company">
+            <?= htmlspecialchars($companyName) ?>
+        </div>
+    </div>
+
+    <main class="company-form-page">
+
+        <?php require_once __DIR__ . '/../includes/flash-display.php'; ?>
 
 
 <div class="page-header">
@@ -204,4 +251,17 @@ require_once __DIR__ . '/../includes/header.php';
 </div>
 
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+    </main>
+
+    <footer class="gateway-footer">
+        <span>FinnServ v1.0.0</span>
+        <span>Accounting &amp; Business Management System</span>
+    </footer>
+
+</div>
+
+<script src="<?= BASE_URL ?>assets/js/gateway.js"></script>
+
+</body>
+
+</html>

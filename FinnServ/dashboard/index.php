@@ -4,21 +4,63 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../includes/init.php';
 require_once __DIR__ . '/../includes/auth.php';
-require_once __DIR__ . '/../includes/context.php';
 
-loadCompanyContext(
-    $pdo,
-    (int) $_SESSION['company_id']
-);
 
-$companyName = $_SESSION['company_name'] ?? 'Company';
-$financialYearName = $_SESSION['financial_year_name'] ?? 'N/A';
-$financialYearStart = $_SESSION['financial_year_start'] ?? null;
-$financialYearEnd = $_SESSION['financial_year_end'] ?? null;
+/*
+|--------------------------------------------------------------------------
+| Require Active Company
+|--------------------------------------------------------------------------
+|
+| A logged-in user can exist without an active company.
+| This happens after "Shut Company".
+|
+*/
 
-$currentDate = date('l, d-M-Y');
+if (
+    !isset($_SESSION['company_id']) ||
+    (int) $_SESSION['company_id'] <= 0
+) {
+
+    header(
+        'Location: ' .
+        BASE_URL .
+        'company/select.php'
+    );
+
+    exit;
+}
+
+
+/*
+|--------------------------------------------------------------------------
+| Current Company Context
+|--------------------------------------------------------------------------
+|
+| The company and financial-year context was already established
+| when the user selected the company.
+|
+*/
+
+$companyName =
+    $_SESSION['company_name'] ?? 'Company';
+
+$financialYearName =
+    $_SESSION['financial_year_name'] ?? 'N/A';
+
+$financialYearStart =
+    $_SESSION['financial_year_start'] ?? null;
+
+$financialYearEnd =
+    $_SESSION['financial_year_end'] ?? null;
+
+$currentDate =
+    date('l, d-M-Y');
+
+
+$pageTitle = 'Gateway of FinnServ';
 
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -67,7 +109,7 @@ $currentDate = date('l, d-M-Y');
             </div>
 
             <div class="gateway-version">
-                Accounting & Business Management
+                Accounting &amp; Business Management
             </div>
 
         </div>
@@ -182,7 +224,10 @@ $currentDate = date('l, d-M-Y');
 
                 <div class="gateway-info-value">
 
-                    <?php if ($financialYearStart && $financialYearEnd): ?>
+                    <?php if (
+                        $financialYearStart &&
+                        $financialYearEnd
+                    ): ?>
 
                         <?= htmlspecialchars(
                             date(
@@ -219,7 +264,9 @@ $currentDate = date('l, d-M-Y');
                 </div>
 
                 <div class="gateway-info-value">
+
                     <?= htmlspecialchars($currentDate) ?>
+
                 </div>
 
             </div>
@@ -235,7 +282,9 @@ $currentDate = date('l, d-M-Y');
                     </div>
 
                     <div class="gateway-company-name">
+
                         <?= htmlspecialchars($companyName) ?>
+
                     </div>
 
                 </div>
@@ -248,7 +297,9 @@ $currentDate = date('l, d-M-Y');
                     </div>
 
                     <div class="gateway-company-name">
+
                         No Vouchers Entered
+
                     </div>
 
                 </div>
@@ -260,28 +311,53 @@ $currentDate = date('l, d-M-Y');
             <div class="gateway-context-box">
 
                 <div>
-                    <span>Financial Year</span>
+
+                    <span>
+                        Financial Year
+                    </span>
+
                     <strong>
-                        <?= htmlspecialchars($financialYearName) ?>
+
+                        <?= htmlspecialchars(
+                            $financialYearName
+                        ) ?>
+
                     </strong>
+
                 </div>
 
+
                 <div>
-                    <span>User</span>
+
+                    <span>
+                        User
+                    </span>
+
                     <strong>
+
                         <?= htmlspecialchars(
                             $_SESSION['user_name'] ?? 'User'
                         ) ?>
+
                     </strong>
+
                 </div>
 
+
                 <div>
-                    <span>Role</span>
+
+                    <span>
+                        Role
+                    </span>
+
                     <strong>
+
                         <?= htmlspecialchars(
                             $_SESSION['role'] ?? 'User'
                         ) ?>
+
                     </strong>
+
                 </div>
 
             </div>
@@ -297,7 +373,9 @@ $currentDate = date('l, d-M-Y');
         <aside class="gateway-menu">
 
             <div class="gateway-menu-heading">
+
                 Gateway of FinnServ
+
             </div>
 
 
@@ -306,15 +384,19 @@ $currentDate = date('l, d-M-Y');
             <div class="gateway-section">
 
                 <div class="gateway-section-title">
+
                     MASTERS
+
                 </div>
 
+
                 <a
-                    href="<?= BASE_URL ?>company/"
+                    href="<?= BASE_URL ?>company/menu.php"
                     class="gateway-menu-item"
                 >
                     Company
                 </a>
+
 
                 <a
                     href="<?= BASE_URL ?>financial-year/"
@@ -322,6 +404,7 @@ $currentDate = date('l, d-M-Y');
                 >
                     Financial Years
                 </a>
+
 
                 <a
                     href="#"
@@ -339,8 +422,11 @@ $currentDate = date('l, d-M-Y');
             <div class="gateway-section">
 
                 <div class="gateway-section-title">
+
                     TRANSACTIONS
+
                 </div>
+
 
                 <a
                     href="#"
@@ -348,6 +434,7 @@ $currentDate = date('l, d-M-Y');
                 >
                     Vouchers
                 </a>
+
 
                 <a
                     href="#"
@@ -365,8 +452,11 @@ $currentDate = date('l, d-M-Y');
             <div class="gateway-section">
 
                 <div class="gateway-section-title">
+
                     UTILITIES
+
                 </div>
+
 
                 <a
                     href="#"
@@ -384,8 +474,11 @@ $currentDate = date('l, d-M-Y');
             <div class="gateway-section">
 
                 <div class="gateway-section-title">
+
                     REPORTS
+
                 </div>
+
 
                 <a
                     href="#"
@@ -394,12 +487,14 @@ $currentDate = date('l, d-M-Y');
                     Balance Sheet
                 </a>
 
+
                 <a
                     href="#"
                     class="gateway-menu-item disabled"
                 >
                     Profit &amp; Loss A/c
                 </a>
+
 
                 <a
                     href="#"
@@ -408,12 +503,14 @@ $currentDate = date('l, d-M-Y');
                     Stock Summary
                 </a>
 
+
                 <a
                     href="#"
                     class="gateway-menu-item disabled"
                 >
                     Ratio Analysis
                 </a>
+
 
                 <a
                     href="#"
@@ -424,6 +521,9 @@ $currentDate = date('l, d-M-Y');
 
             </div>
 
+
+
+            <!-- QUIT -->
 
             <a
                 href="<?= BASE_URL ?>auth/logout.php"
@@ -445,14 +545,20 @@ $currentDate = date('l, d-M-Y');
     <footer class="gateway-footer">
 
         <span>
+
             FinnServ v1.0.0
+
         </span>
 
+
         <span>
+
             Accounting &amp; Business Management System
+
         </span>
 
     </footer>
+
 
 </div>
 

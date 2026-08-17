@@ -55,7 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function handleGatewayAction(action) {
   switch (action) {
     case "company":
-      window.location.href = "/Internship/FinnServ/company/";
+      window.location.href = "/Internship/FinnServ/company/menu.php";
 
       break;
 

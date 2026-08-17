@@ -1,0 +1,527 @@
+/* =========================================================
+   COMPANY MENU
+   TALLY-INSPIRED INTERFACE
+   ========================================================= */
+
+.company-menu-page {
+
+    flex: 1;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: flex-start;
+
+    padding-top: 55px;
+
+    background: rgba(17, 24, 39, 0.18);
+
+}
+
+
+.company-menu-panel {
+
+    width: 430px;
+
+    min-height: 520px;
+
+    background: #e0f2fe;
+
+    border: 1px solid #64748b;
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.18);
+
+}
+
+
+.company-menu-title {
+
+    padding: 7px 12px;
+
+    text-align: center;
+
+    background: #2563a6;
+
+    color: #ffffff;
+
+    font-weight: 600;
+
+    font-size: 14px;
+
+}
+
+
+.company-menu-current {
+
+    padding: 10px;
+
+    background: #ffffff;
+
+}
+
+
+.company-menu-current input {
+
+    width: 100%;
+
+    height: 30px;
+
+    padding: 4px 8px;
+
+    border: 1px solid #2563eb;
+
+    background: #fff3b0;
+
+    color: #111827;
+
+    font-weight: 600;
+
+    outline: none;
+
+}
+
+
+.company-menu-list {
+
+    padding: 12px 0 18px;
+
+}
+
+
+.company-menu-item {
+
+    display: block;
+
+    padding: 5px 18px;
+
+    text-align: right;
+
+    color: #111827;
+
+    font-size: 14px;
+
+    text-decoration: none;
+
+}
+
+
+.company-menu-item:hover {
+
+    background: #fbbf24;
+
+}
+
+
+.company-menu-companies {
+
+    margin-top: 2px;
+
+    border-top: 1px solid #94a3b8;
+
+}
+
+
+.company-menu-heading {
+
+    padding: 5px 10px;
+
+    background: #2563a6;
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+}
+
+
+.company-menu-company-row {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    padding: 5px 10px;
+
+    font-size: 14px;
+
+}
+
+
+.company-menu-company-row.active {
+
+    background: #fbbf24;
+
+    color: #111827;
+
+    font-weight: 600;
+
+}
+
+
+.company-menu-footer {
+
+    padding: 18px 10px;
+
+}
+
+
+.company-menu-back {
+
+    color: #111827;
+
+    font-size: 13px;
+
+    text-decoration: none;
+
+}
+
+
+.company-menu-back:hover {
+
+    text-decoration: underline;
+
+}
+
+
+.gateway-title-company {
+
+    margin-right: 12px;
+
+    font-weight: 600;
+
+}
+
+/* =========================================================
+   COMPANY CREATION / ALTERATION FORM
+   ========================================================= */
+
+.company-form-page {
+
+    flex: 1;
+
+    overflow-y: auto;
+
+    background: #ffffff;
+
+    padding: 20px 8px;
+}
+
+
+.company-form {
+
+    max-width: 1250px;
+
+    min-height: 100%;
+
+    position: relative;
+
+    padding-bottom: 70px;
+}
+
+
+.company-form-row {
+
+    display: grid;
+
+    grid-template-columns: 210px minmax(250px, 360px);
+
+    align-items: center;
+
+    min-height: 28px;
+
+    position: relative;
+}
+
+
+.company-form-row-large {
+
+    align-items: start;
+
+}
+
+
+.company-form-row label {
+
+    padding-left: 4px;
+
+    color: #111827;
+
+    font-size: 14px;
+}
+
+
+.company-form-row input,
+.company-form-row textarea {
+
+    width: 100%;
+
+    border: 0;
+
+    border-bottom: 1px solid transparent;
+
+    padding: 4px 6px;
+
+    background: #ffffff;
+
+    color: #111827;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    font-size: 14px;
+
+    outline: none;
+}
+
+
+.company-form-row textarea {
+
+    resize: vertical;
+
+    border: 1px solid #d1d5db;
+
+}
+
+
+.company-form-row input:focus,
+.company-form-row textarea:focus {
+
+    border-color: #2563eb;
+
+    background: #fff3b0;
+}
+
+
+.company-form-divider {
+
+    width: 100%;
+
+    margin: 18px 0;
+
+    border-top: 1px solid #d1d5db;
+}
+
+
+.field-error {
+
+    position: absolute;
+
+    left: 580px;
+
+    color: #dc2626;
+
+    font-size: 12px;
+}
+
+
+.company-form-actions {
+
+    position: fixed;
+
+    left: 0;
+
+    right: 0;
+
+    bottom: 30px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    padding: 5px 12px;
+
+    border-top: 1px solid #cbd5e1;
+
+    background: #e0f2fe;
+}
+
+
+.company-action-button {
+
+    border: 1px solid #94a3b8;
+
+    padding: 5px 18px;
+
+    background: #ffffff;
+
+    color: #111827;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    font-size: 13px;
+
+    text-decoration: none;
+
+    cursor: pointer;
+}
+
+
+.company-action-button:hover {
+
+    background: #fbbf24;
+}
+
+
+.company-action-button.primary {
+
+    background: #2563a6;
+
+    color: #ffffff;
+
+}
+
+
+.company-action-button.primary:hover {
+
+    background: #1d4ed8;
+}
+
+
+.form-error {
+
+    margin-bottom: 15px;
+
+    padding: 8px 12px;
+
+    border: 1px solid #dc2626;
+
+    background: #fef2f2;
+
+    color: #b91c1c;
+
+    font-size: 13px;
+
+}
+
+/* =========================================================
+   COMPANY SELECTION
+   ========================================================= */
+
+.company-select-page {
+
+    flex: 1;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: flex-start;
+
+    padding-top: 70px;
+
+    background: rgba(17, 24, 39, 0.18);
+
+}
+
+
+.company-select-panel {
+
+    width: 430px;
+
+    border: 1px solid #64748b;
+
+    background: #e0f2fe;
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.18);
+
+}
+
+
+.company-select-title {
+
+    padding: 7px 12px;
+
+    text-align: center;
+
+    background: #2563a6;
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+
+.company-select-list {
+
+    min-height: 120px;
+
+    padding: 10px 0;
+
+    background: #ffffff;
+
+}
+
+
+.company-select-item {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    padding: 5px 14px;
+
+    color: #111827;
+
+    font-size: 14px;
+
+    text-decoration: none;
+
+}
+
+
+.company-select-item:hover {
+
+    background: #fbbf24;
+
+}
+
+
+.company-select-item.active {
+
+    background: #fbbf24;
+
+    font-weight: 600;
+
+}
+
+
+.company-active-label {
+
+    color: #166534;
+
+    font-size: 11px;
+
+}
+
+
+.company-select-empty {
+
+    padding: 20px;
+
+    color: #6b7280;
+
+    text-align: center;
+
+    font-size: 13px;
+
+}
+
+
+.company-select-actions {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    padding: 10px;
+
+    border-top: 1px solid #94a3b8;
+
+}
