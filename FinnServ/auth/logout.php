@@ -1,23 +1,19 @@
 <?php
-
 declare(strict_types=1);
-
-// Include standard configurations and start session environment.
 require_once __DIR__ . '/../includes/init.php';
 
-
-// Logout Procedure
-
+// Verify active session
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Clear all active session variables from memory.
+// Clear all active session values
 $_SESSION = [];
 
-// Delete the browser session cookie by setting its expiry time in the past.
+// Delete active session cookie in user browser
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();
+    
     setcookie(
         session_name(),
         '',
@@ -29,8 +25,9 @@ if (ini_get("session.use_cookies")) {
     );
 }
 
-// Destroy session data on the server file structure.
+// Destroy session context completely
 session_destroy();
 
+// Redirect back to login screen
 header('Location: ' . BASE_URL . 'auth/login.php');
 exit;

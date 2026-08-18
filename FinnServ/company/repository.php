@@ -1,111 +1,24 @@
 <?php
-
 declare(strict_types=1);
 
-
-/*
-|--------------------------------------------------------------------------
-| Find Company
-|--------------------------------------------------------------------------
-*/
-
-function findCompany(
-    PDO $pdo,
-    int $companyId
-): ?array {
-
-    $sql = "
-        SELECT
-            id,
-            name,
-            mailing_name,
-            address,
-            state,
-            country,
-            pincode,
-            phone,
-            email,
-            gstin
-        FROM companies
-        WHERE id = :id
-        LIMIT 1
-    ";
-
-    $statement = $pdo->prepare($sql);
-
-    $statement->execute([
-        ':id' => $companyId,
-    ]);
-
-    $company = $statement->fetch(PDO::FETCH_ASSOC);
-
-    return $company ?: null;
+// Get specific company record by ID
+function findCompany(PDO $pdo, int $companyId): ?array
+{
+    $stmt = $pdo->prepare("SELECT id, name, mailing_name, address, state, country, pincode, phone, email, gstin FROM companies WHERE id = ? LIMIT 1");
+    $stmt->execute([$companyId]);
+    return $stmt->fetch() ?: null;
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| Update Company
-|--------------------------------------------------------------------------
-*/
-
-function updateCompany(
-    PDO $pdo,
-    int $companyId,
-    array $data
-): bool {
-
-    $sql = "
-        UPDATE companies
-        SET
-            name = :name,
-            mailing_name = :mailing_name,
-            address = :address,
-            state = :state,
-            country = :country,
-            pincode = :pincode,
-            phone = :phone,
-            email = :email,
-            gstin = :gstin
-        WHERE id = :id
-    ";
-
-    $statement = $pdo->prepare($sql);
-
-    return $statement->execute([
-        ':name' => $data['name'],
-        ':mailing_name' => $data['mailing_name'],
-        ':address' => $data['address'],
-        ':state' => $data['state'],
-        ':country' => $data['country'],
-        ':pincode' => $data['pincode'],
-        ':phone' => $data['phone'],
-        ':email' => $data['email'],
-        ':gstin' => $data['gstin'],
-        ':id' => $companyId,
-    ]);
+// Update company profile details
+function updateCompany(PDO $pdo, int $companyId, array $data): bool
+{
+    $sql = "UPDATE companies SET name = :name, mailing_name = :mailing_name, address = :address, state = :state, country = :country, pincode = :pincode, phone = :phone, email = :email, gstin = :gstin WHERE id = :id";
+    $data['id'] = $companyId;
+    return $pdo->prepare($sql)->execute($data);
 }
 
-
-/*
-|--------------------------------------------------------------------------
-| Get All Companies
-|--------------------------------------------------------------------------
-*/
-
+// Fetch all registered companies ordered by name
 function getAllCompanies(PDO $pdo): array
 {
-    $sql = "
-        SELECT
-            id,
-            name,
-            state,
-            country
-        FROM companies
-        ORDER BY name ASC
-    ";
-
-    $statement = $pdo->query($sql);
-
-    return $statement->fetchAll(PDO::FETCH_ASSOC);
+    return $pdo->query("SELECT id, name, state, country FROM companies ORDER BY name ASC")->fetchAll();
 }

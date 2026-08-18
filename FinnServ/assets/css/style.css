@@ -85,6 +85,16 @@ a {
   font-weight: 700;
 }
 
+.brand-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.brand-link:hover .brand-name {
+  color: #38bdf8;
+}
+
 .brand-subtitle {
   color: #9ca3af;
 

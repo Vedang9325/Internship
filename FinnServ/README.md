@@ -1,252 +1,78 @@
-# FinnServ
-
-FinnServ is a simple PHP and MySQL accounting web application inspired by the classic Tally-style workflow. It provides a login-protected dashboard, company profile management, and financial year management as the foundation for a broader accounting system.
-
-The project is designed for a local XAMPP/PHP learning environment and keeps the codebase easy to read: plain PHP, PDO database access, session-based authentication, and separate folders for each application module.
-
-## Features
-
-- Session-based user login and logout
-- Tally-inspired "Gateway of FinnServ" dashboard
-- Active company context shown across private pages
-- Active financial year context shown across private pages
-- Company profile view and edit screen
-- Financial year listing and creation
-- Financial year activation
-- Flash messages for success and error feedback
-- PDO prepared statements for database queries
-- Basic server-side validation for company and financial year forms
-- Responsive CSS for dashboard, forms, tables, and navigation
-
-## Tech Stack
-
-- PHP 8+
-- MySQL / MariaDB
-- PDO for database access
-- HTML, CSS, and vanilla JavaScript
-- XAMPP-compatible local setup
-
-## Project Structure
-
-```text
-FinnServ/
-├── assets/
-│   ├── css/
-│   │   ├── gateway.css
-│   │   └── style.css
-│   └── js/
-│       ├── app.js
-│       └── gateway.js
-├── auth/
-│   ├── login.php
-│   └── logout.php
-├── company/
-│   ├── edit.php
-│   ├── index.php
-│   ├── repository.php
-│   ├── save.php
-│   └── validator.php
-├── config/
-│   ├── app.php
-│   └── database.php
-├── dashboard/
-│   └── index.php
-├── financial-year/
-│   ├── activate.php
-│   ├── create.php
-│   ├── edit.php
-│   ├── index.php
-│   ├── repository.php
-│   ├── save.php
-│   └── validator.php
-├── includes/
-│   ├── auth.php
-│   ├── context.php
-│   ├── flash-display.php
-│   ├── flash.php
-│   ├── footer.php
-│   ├── header.php
-│   └── init.php
-├── index.php
-├── queries.txt
-└── README.md
-```
-
-## How It Works
-
-Most private pages follow this flow:
-
-1. Load application configuration and database connection through `includes/init.php`.
-2. Start or resume a PHP session.
-3. Verify that the user is logged in through `includes/auth.php`.
-4. Load the current company and active financial year through `includes/context.php`.
-5. Render the shared layout from `includes/header.php` and `includes/footer.php`.
-6. Run module-specific database reads or writes through repository files.
-
-The root `index.php` is currently a database connection smoke test. The main application entry after login is:
-
-```text
-http://localhost/Internship/FinnServ/dashboard/
-```
-
-## Local Setup
-
-### 1. Move the Project
-
-Place the project inside your XAMPP `htdocs` directory:
-
-```text
-C:\xampp\htdocs\Internship\FinnServ
-```
-
-### 2. Create the Database
-
-Open phpMyAdmin or a MySQL client and run the SQL from:
-
-```text
-queries.txt
-```
-
-This creates the `finnserv` database and the core accounting tables.
-
-### 3. Configure Database Credentials
-
-Check `config/database.php` and update these constants if your local setup is different:
-
-```php
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'finnserv');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-```
-
-### 4. Configure Base URL
-
-Check `config/app.php`:
-
-```php
-define('BASE_URL', '/Internship/FinnServ/');
-```
-
-If you place the folder somewhere else under `htdocs`, update `BASE_URL` to match that path.
-
-### 5. Add Initial Data
-
-The schema file creates tables, but it does not currently seed a default company, user, or active financial year. Add at least:
-
-- One record in `companies`
-- One active record in `financial_years`
-- One active record in `users`
-
-Passwords must be stored as PHP password hashes because login uses `password_verify()`.
-
-You can generate a password hash with:
-
-```php
-<?php
-echo password_hash('admin123', PASSWORD_DEFAULT);
-```
-
-Then store the generated hash in the `users.password` column.
-
-### 6. Run the App
-
-Start Apache and MySQL from XAMPP, then open:
-
-```text
-http://localhost/Internship/FinnServ/
-```
-
-For the login page:
-
-```text
-http://localhost/Internship/FinnServ/auth/login.php
-```
-
-## Main Modules
-
-### Authentication
-
-Located in `auth/`.
-
-- `login.php` checks username, password hash, account status, and loads session data.
-- `logout.php` clears the active session and redirects to login.
-
-### Dashboard
-
-Located in `dashboard/`.
-
-- `index.php` renders the Tally-inspired Gateway of FinnServ screen.
-- `assets/js/gateway.js` handles keyboard shortcuts and quick actions.
-
-### Company
-
-Located in `company/`.
-
-- `index.php` displays the active company profile.
-- `edit.php` displays the company edit form.
-- `save.php` validates and saves company changes.
-- `repository.php` contains database functions.
-- `validator.php` contains company validation rules.
-
-### Financial Year
-
-Located in `financial-year/`.
-
-- `index.php` lists all financial years for the active company.
-- `create.php` displays the new financial year form.
-- `save.php` validates and creates financial year records.
-- `activate.php` switches the active financial year.
-- `repository.php` contains database functions.
-- `validator.php` contains financial year validation rules.
-
-## Database Tables
-
-The schema in `queries.txt` includes:
-
-- `companies`
-- `users`
-- `groups`
-- `ledgers`
-- `voucher_types`
-- `vouchers`
-- `voucher_entries`
-- `financial_years`
-
-Some accounting tables are already present in the database schema even though their UI screens are not fully implemented yet. This gives the project room to grow into ledgers, groups, voucher entry, reports, GST, stock items, and accounting statements.
-
-## Current Limitations
-
-- `financial-year/edit.php` is currently empty, so the financial year edit link is not implemented yet.
-- Financial year activation currently uses a GET request. It should be converted to POST before production use.
-- CSRF protection is not implemented yet for form submissions.
-- `queries.txt` does not include seed data for first login.
-- Role-based permissions are not enforced beyond storing a user role in the session.
-- Several dashboard menu items are placeholders for future accounting modules.
-
-## Suggested Roadmap
-
-1. Add seed SQL for default company, active financial year, and admin user.
-2. Implement financial year editing.
-3. Add CSRF token helpers for all forms and state-changing actions.
-4. Add role-based access checks for Admin, Manager, Accountant, and Viewer.
-5. Build ledger and group management screens.
-6. Add voucher entry workflows for payment, receipt, contra, journal, sales, and purchase.
-7. Add accounting reports such as Trial Balance, Profit and Loss, and Balance Sheet.
-8. Improve dashboard shortcuts and remove placeholder alerts.
-
-## Development Notes
-
-- Keep database reads and writes inside module `repository.php` files.
-- Keep form validation inside module `validator.php` files.
-- Escape output with `htmlspecialchars()` when rendering user-controlled values.
-- Use prepared statements for all SQL that includes dynamic values.
-- Run PHP syntax checks before submitting changes:
-
-```powershell
-C:\xampp\php\php.exe -l path\to\file.php
-```
-
-## License
-
-This project is currently intended for educational and internship use. Add a license file before distributing it publicly.
+# FinnServ - Simple Accounting Web Application
+
+FinnServ is a simple PHP-based accounting web application with a dashboard designed to look and feel like the classic **Tally** desktop software.
+
+---
+
+## 1. How the Application Works (The Process)
+
+When you open or click any page in the application, it follows this simple sequence behind the scenes:
+1. **Connects to Database**: Connects the code to the MySQL database.
+2. **Checks Login Status**: Verifies if you are logged in. If not, it redirects you to the login screen.
+3. **Loads Company Info**: Automatically gets the active company name and financial year dates from the database to display at the top of the screen.
+4. **Displays the Page**: Combines the navigation layout (sidebar and topbar) with the page content.
+
+---
+
+## 2. Quick Local Setup
+1. Create a MySQL database named `finnserv` and import the tables using the SQL query commands in `queries.txt`.
+2. Move the project folder to your server's web root (e.g. `htdocs/Internship/FinnServ`).
+3. Make sure database settings in `config/database.php` match your local environment credentials.
+4. Run the project URL in your browser: `http://localhost/Internship/FinnServ/dashboard/`.
+
+---
+
+## 3. Comprehensive File & Folder Guide
+
+### 📂 Setup & Configurations
+- **`queries.txt`**: SQL queries to set up the tables (`companies`, `users`, `financial_years`, `ledgers`, etc.) on database initialization.
+- **`config/app.php`**: Holds application constants (`APP_NAME`, `APP_VERSION`, `BASE_URL`, `APP_ENV`) and sets the timezone to `Asia/Kolkata`.
+- **`config/database.php`**: Sets up the PDO database handle `$pdo` with error reporting enabled, default fetch set to associative array, and prepared statement emulation disabled.
+- **`index.php` (Root)**: Entry router redirecting to `dashboard/` if authenticated, or `auth/login.php` if not.
+
+### 📂 Look, Feel & Interactions
+- **`assets/css/style.css`**: CSS stylesheet rules for the Modern Classic layout (sidebar navigation panel, cards, data tables, layout pages).
+- **`assets/css/gateway.css`**: CSS stylesheet rules for the retro Tally-inspired layout.
+- **`assets/css/company.css`**: CSS stylesheet rules for forms and fields layout.
+- **`assets/js/gateway.js`**: Keydown event listener that captures shortcut hotkeys (e.g., `F1` for Help, `F2` for Date, `F3` for Company menu, `G` for Go To) and redirects or triggers alerts accordingly.
+- **`assets/js/app.js`**: Script log initializing confirmation on page load.
+
+### 📂 Layout Templates & Helpers (in `includes/`)
+- **`includes/init.php`**: Imports app/db configurations and initializes session context.
+- **`includes/auth.php`**: Active session validator check. Redirects non-logged-in users to the login screen.
+- **`includes/context.php`**: Contains `loadCompanyContext()` which queries company data and active financial years, storing them in `$_SESSION`.
+- **`includes/flash.php`**: Helper functions `setFlash()` and `getFlash()` to store and read temporary session feedback alerts.
+- **`includes/flash-display.php`**: Outputs active alerts inside standard CSS alert boxes.
+- **`includes/header.php`**: Page header shell for Modern Classic layouts, rendering sidebars and top navigation details.
+- **`includes/footer.php`**: Page footer shell closing grid layouts and HTML tags.
+
+### 📂 Core Application Modules
+
+#### Authentication Module (`auth/`)
+- **`auth/login.php`**: Authenticates username and password via `password_verify()`, initiates active session parameters, and redirects to dashboard.
+- **`auth/logout.php`**: Wipes session values, clears active cookies, destroys session context, and redirects back to the login page.
+
+#### Dashboard Module (`dashboard/`)
+- **`dashboard/index.php`**: Main Tally-style landing portal showing current periods, current dates, active company summaries, and master action options.
+
+#### Company Module (`company/`)
+- **`company/repository.php`**: Database CRUD methods `findCompany()`, `updateCompany()`, and `getAllCompanies()`.
+- **`company/index.php`**: Modern classic details view showing active company details.
+- **`company/edit.php`**: Modern classic company edit view. Routes updates to `company/update.php`.
+- **`company/alter.php`**: Tally-style company update form layout.
+- **`company/create.php`**: Tally-style new company registration form layout.
+- **`company/save.php`**: Handles new company creation inside a SQL transaction block, creates initial active FY, sets context, and redirects to dashboard.
+- **`company/update.php`**: Validates form inputs, runs company table updates, syncs active session variables, and redirects to dashboard.
+- **`company/menu.php`**: Change Company action selector panel (create, alter, select).
+- **`company/select.php`**: Lists all companies to switch active context.
+- **`company/switch.php`**: Fetches new active company details, validates its active FY, and redirects back to gateway.
+- **`company/session-test.php`**: Diagnostic view dump displaying all session context values.
+
+#### Financial Year Module (`financial-year/`)
+- **`financial-year/repository.php`**: DB actions `getFinancialYears()`, `getFinancialYear()`, `financialYearExists()`, `createFinancialYear()`, `updateFinancialYear()`, and `activateFinancialYear()`.
+- **`financial-year/validator.php`**: Checks input names, verify bounds, and validates that start date comes before end date.
+- **`financial-year/index.php`**: List view showing accounting years, status indicators, and activation switch links.
+- **`financial-year/create.php`**: Setup wizard form to configure a new accounting period.
+- **`financial-year/save.php`**: Form submit target processor. Runs validation, duplicate check checks, saves years, sets alert flashes, and redirects back to listing.
+- **`financial-year/activate.php`**: Triggers database activation updates and redirects back to index.
+- **`financial-year/edit.php`**: Empty placeholder for financial year editor page.

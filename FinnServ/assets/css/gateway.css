@@ -55,6 +55,15 @@
   letter-spacing: -0.5px;
 }
 
+.gateway-logo-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.gateway-logo-link:hover .gateway-logo {
+  color: #38bdf8;
+}
+
 .gateway-version {
   margin-top: 2px;
 
