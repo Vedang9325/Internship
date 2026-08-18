@@ -61,7 +61,13 @@ $companyName = $_SESSION['company_name'] ?? 'Company';
 
     <!-- Main Content Panel -->
     <main class="company-form-page">
-        <?php require_once __DIR__ . '/../includes/flash-display.php'; ?>
+        <?php 
+        $flash = getFlash();
+        if ($flash): ?>
+            <div class="form-error" style="border-color: <?= $flash['type'] === 'danger' ? '#dc2626' : '#16a34a' ?>; background: <?= $flash['type'] === 'danger' ? '#fef2f2' : '#f0fdf4' ?>; color: <?= $flash['type'] === 'danger' ? '#b91c1c' : '#15803d' ?>; padding: 8px 12px; margin-bottom: 15px; border: 1px solid;">
+                <?= htmlspecialchars($flash['message']) ?>
+            </div>
+        <?php endif; ?>
 
         <!-- Title header block -->
         <div class="page-header">
@@ -111,9 +117,10 @@ $companyName = $_SESSION['company_name'] ?? 'Company';
                                 
                                 <td>
                                     <div class="table-actions">
-                                        <a href="<?= BASE_URL ?>financial-year/edit.php?id=<?= (int)$financialYear['id'] ?>" class="action-link">Edit</a>
                                         <?php if ((int)$financialYear['is_active'] !== 1): ?>
                                             <a href="<?= BASE_URL ?>financial-year/activate.php?id=<?= (int)$financialYear['id'] ?>" class="action-link action-primary">Activate</a>
+                                        <?php else: ?>
+                                            <span class="action-link text-muted">Current Active</span>
                                         <?php endif; ?>
                                     </div>
                                 </td>
