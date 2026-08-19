@@ -182,5 +182,6 @@ unset($_SESSION['company_create_errors'], $_SESSION['company_create_old']);
         <span>Accounting &amp; Business Management System</span>
     </footer>
 </div>
+<script src="<?= BASE_URL ?>assets/js/gateway.js"></script>
 </body>
 </html>

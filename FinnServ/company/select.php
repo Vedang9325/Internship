@@ -77,5 +77,6 @@ unset($_SESSION['company_switch_error']);
         <span>Accounting &amp; Business Management System</span>
     </footer>
 </div>
+<script src="<?= BASE_URL ?>assets/js/gateway.js"></script>
 </body>
 </html>

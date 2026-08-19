@@ -80,5 +80,6 @@ $hasActiveCompany = $companyId > 0;
         <span>Accounting &amp; Business Management System</span>
     </footer>
 </div>
+<script src="<?= BASE_URL ?>assets/js/gateway.js"></script>
 </body>
 </html>

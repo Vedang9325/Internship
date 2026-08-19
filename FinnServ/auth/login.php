@@ -78,5 +78,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit">Login</button>
         </form>
     </main>
+    <script src="<?= BASE_URL ?>assets/js/gateway.js"></script>
 </body>
 </html>

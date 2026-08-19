@@ -314,6 +314,7 @@ usort(
 
 </div>
 
+<script src="<?= BASE_URL ?>assets/js/gateway.js"></script>
 </body>
 
 </html>
