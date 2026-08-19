@@ -207,6 +207,7 @@ The database schema (`finnserv`) is defined in `queries.txt` and contains 8 prim
   - `Create Company`: Navigates to `company/create.php`.
   - `Alter Company`: Navigates to `company/alter.php`.
   - `Select Company`: Navigates to `company/select.php`.
+  - `Delete Company`: Navigates to `company/delete.php`.
   - Renders currently active company status box and back link to Gateway dashboard.
 
 #### [`company/select.php`](file:///c:/xampp/htdocs/Internship/FinnServ/company/select.php)
@@ -215,6 +216,14 @@ The database schema (`finnserv`) is defined in `queries.txt` and contains 8 prim
   - Queries all companies via `getAllCompanies($pdo)`.
   - Highlights currently active company with `(ACTIVE)` badge.
   - Clicking any company routes request to `company/switch.php?id={id}`.
+
+#### [`company/delete.php`](file:///c:/xampp/htdocs/Internship/FinnServ/company/delete.php)
+* **Purpose**: Tally-style delete company confirmation/execution screen.
+* **Workflow**:
+  - Lists all companies available in the system.
+  - Clicking a company brings up a red styled confirmation dialog.
+  - Confirmed deletion runs a transactional execution of `DELETE FROM companies WHERE id = ?`.
+  - Clears context session variables if the currently active company is deleted.
 
 #### [`company/switch.php`](file:///c:/xampp/htdocs/Internship/FinnServ/company/switch.php)
 * **Purpose**: Processes switching active company context.

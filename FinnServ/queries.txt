@@ -235,3 +235,618 @@ ALTER TABLE companies
 
 
 
+ALTER TABLE groups
+
+    ADD COLUMN alias VARCHAR(100) NULL
+        AFTER name,
+
+    ADD COLUMN affects_gross_profit TINYINT(1) NOT NULL DEFAULT 0
+        AFTER nature,
+
+    ADD COLUMN behaves_like_subledger TINYINT(1) NOT NULL DEFAULT 0
+        AFTER affects_gross_profit,
+
+    ADD COLUMN net_debit_credit_reporting TINYINT(1) NOT NULL DEFAULT 0
+        AFTER behaves_like_subledger,
+
+    ADD COLUMN used_for_calculation TINYINT(1) NOT NULL DEFAULT 0
+        AFTER net_debit_credit_reporting,
+
+    ADD COLUMN allocation_method ENUM(
+        'Not Applicable',
+        'Appropriate by Qty',
+        'Appropriate by Value'
+    ) NOT NULL DEFAULT 'Not Applicable'
+        AFTER used_for_calculation,
+
+    ADD COLUMN hsn_sac_details_mode ENUM(
+        'As per Company/Group',
+        'Specify Details Here',
+        'Use GST Classification'
+    ) NOT NULL DEFAULT 'As per Company/Group'
+        AFTER allocation_method,
+
+    ADD COLUMN hsn_sac VARCHAR(20) NULL
+        AFTER hsn_sac_details_mode,
+
+    ADD COLUMN hsn_sac_description VARCHAR(255) NULL
+        AFTER hsn_sac,
+
+    ADD COLUMN gst_rate_details_mode ENUM(
+        'As per Company/Group',
+        'Specify Details Here',
+        'Specify Slab-Based Rates',
+        'Use GST Classification'
+    ) NOT NULL DEFAULT 'As per Company/Group'
+        AFTER hsn_sac_description,
+
+    ADD COLUMN taxability_type VARCHAR(50) NULL
+        AFTER gst_rate_details_mode,
+
+    ADD COLUMN gst_rate DECIMAL(5,2) NULL
+        AFTER taxability_type,
+
+    ADD COLUMN is_system TINYINT(1) NOT NULL DEFAULT 0
+        AFTER gst_rate,
+
+    ADD COLUMN display_order INT NOT NULL DEFAULT 0
+        AFTER is_system,
+
+    ADD COLUMN updated_at TIMESTAMP
+        DEFAULT CURRENT_TIMESTAMP
+        ON UPDATE CURRENT_TIMESTAMP
+        AFTER created_at;
+
+START TRANSACTION;
+
+-- ============================================================
+-- FINNSERV STANDARD GROUPS
+-- Company ID: 1
+--
+-- NULL parent_id = Primary
+-- is_system = 1 = predefined/system group
+-- ============================================================
+
+
+-- ============================================================
+-- PRIMARY GROUPS
+-- ============================================================
+
+INSERT INTO groups
+(
+    company_id,
+    name,
+    alias,
+    parent_id,
+    nature,
+    affects_gross_profit,
+    is_system,
+    display_order
+)
+SELECT
+    1,
+    x.name,
+    x.alias,
+    NULL,
+    x.nature,
+    x.affects_gross_profit,
+    1,
+    x.display_order
+FROM
+(
+    SELECT 'Branch / Divisions' AS name,
+           'Branch / Divisions' AS alias,
+           'Assets' AS nature,
+           0 AS affects_gross_profit,
+           10 AS display_order
+
+    UNION ALL
+    SELECT 'Capital Account',
+           'Capital Account',
+           'Liabilities',
+           0,
+           20
+
+    UNION ALL
+    SELECT 'Current Assets',
+           'Current Assets',
+           'Assets',
+           0,
+           30
+
+    UNION ALL
+    SELECT 'Current Liabilities',
+           'Current Liabilities',
+           'Liabilities',
+           0,
+           40
+
+    UNION ALL
+    SELECT 'Direct Expenses',
+           'Expenses (Direct)',
+           'Expenses',
+           1,
+           50
+
+    UNION ALL
+    SELECT 'Direct Incomes',
+           'Income (Direct)',
+           'Income',
+           1,
+           60
+
+    UNION ALL
+    SELECT 'Fixed Assets',
+           'Fixed Assets',
+           'Assets',
+           0,
+           70
+
+    UNION ALL
+    SELECT 'Indirect Expenses',
+           'Expenses (Indirect)',
+           'Expenses',
+           0,
+           80
+
+    UNION ALL
+    SELECT 'Indirect Incomes',
+           'Income (Indirect)',
+           'Income',
+           0,
+           90
+
+    UNION ALL
+    SELECT 'Investments',
+           'Investments',
+           'Assets',
+           0,
+           100
+
+    UNION ALL
+    SELECT 'Loans (Liability)',
+           'Loans (Liability)',
+           'Liabilities',
+           0,
+           110
+
+    UNION ALL
+    SELECT 'Misc. Expenses (ASSET)',
+           'Misc. Expenses (ASSET)',
+           'Assets',
+           0,
+           120
+
+    UNION ALL
+    SELECT 'Purchase Accounts',
+           'Purchase Accounts',
+           'Expenses',
+           0,
+           130
+
+    UNION ALL
+    SELECT 'Sales Accounts',
+           'Sales Accounts',
+           'Income',
+           1,
+           140
+
+    UNION ALL
+    SELECT 'Suspense A/c',
+           'Suspense A/c',
+           'Assets',
+           0,
+           150
+) AS x
+WHERE NOT EXISTS
+(
+    SELECT 1
+    FROM groups g
+    WHERE g.company_id = 1
+      AND g.name = x.name
+);
+
+
+-- ============================================================
+-- CURRENT ASSETS
+-- ============================================================
+
+INSERT INTO groups
+(
+    company_id,
+    name,
+    alias,
+    parent_id,
+    nature,
+    is_system,
+    display_order
+)
+SELECT
+    1,
+    x.name,
+    x.alias,
+    p.id,
+    'Assets',
+    1,
+    x.display_order
+FROM
+(
+    SELECT 'Bank Accounts' AS name,
+           'Bank Accounts' AS alias,
+           210 AS display_order
+
+    UNION ALL
+    SELECT 'Cash-in-Hand',
+           'Cash-in-Hand',
+           220
+
+    UNION ALL
+    SELECT 'Deposits (Asset)',
+           'Deposits (Asset)',
+           230
+
+    UNION ALL
+    SELECT 'Loans & Advances (Asset)',
+           'Loans & Advances (Asset)',
+           240
+
+    UNION ALL
+    SELECT 'Stock-in-Hand',
+           'Stock-in-Hand',
+           250
+
+    UNION ALL
+    SELECT 'Sundry Debtors',
+           'Sundry Debtors',
+           260
+) AS x
+JOIN groups p
+    ON p.company_id = 1
+   AND p.name = 'Current Assets'
+WHERE NOT EXISTS
+(
+    SELECT 1
+    FROM groups g
+    WHERE g.company_id = 1
+      AND g.name = x.name
+);
+
+
+-- ============================================================
+-- CURRENT LIABILITIES
+-- ============================================================
+
+INSERT INTO groups
+(
+    company_id,
+    name,
+    alias,
+    parent_id,
+    nature,
+    is_system,
+    display_order
+)
+SELECT
+    1,
+    x.name,
+    x.alias,
+    p.id,
+    'Liabilities',
+    1,
+    x.display_order
+FROM
+(
+    SELECT 'Duties & Taxes' AS name,
+           'Duties & Taxes' AS alias,
+           310 AS display_order
+
+    UNION ALL
+    SELECT 'Provisions',
+           'Provisions',
+           320
+
+    UNION ALL
+    SELECT 'Sundry Creditors',
+           'Sundry Creditors',
+           330
+) AS x
+JOIN groups p
+    ON p.company_id = 1
+   AND p.name = 'Current Liabilities'
+WHERE NOT EXISTS
+(
+    SELECT 1
+    FROM groups g
+    WHERE g.company_id = 1
+      AND g.name = x.name
+);
+
+
+-- ============================================================
+-- CAPITAL ACCOUNT
+-- ============================================================
+
+INSERT INTO groups
+(
+    company_id,
+    name,
+    alias,
+    parent_id,
+    nature,
+    is_system,
+    display_order
+)
+SELECT
+    1,
+    x.name,
+    x.alias,
+    p.id,
+    'Liabilities',
+    1,
+    x.display_order
+FROM
+(
+    SELECT 'Reserves & Surplus' AS name,
+           'Reserves & Surplus' AS alias,
+           410 AS display_order
+
+    UNION ALL
+    SELECT 'Retained Earnings',
+           'Retained Earnings',
+           420
+) AS x
+JOIN groups p
+    ON p.company_id = 1
+   AND p.name = 'Capital Account'
+WHERE NOT EXISTS
+(
+    SELECT 1
+    FROM groups g
+    WHERE g.company_id = 1
+      AND g.name = x.name
+);
+
+
+-- ============================================================
+-- LOANS (LIABILITY)
+-- ============================================================
+
+INSERT INTO groups
+(
+    company_id,
+    name,
+    alias,
+    parent_id,
+    nature,
+    is_system,
+    display_order
+)
+SELECT
+    1,
+    x.name,
+    x.alias,
+    p.id,
+    'Liabilities',
+    1,
+    x.display_order
+FROM
+(
+    SELECT 'Bank OCC A/c' AS name,
+           'Bank OCC A/c' AS alias,
+           510 AS display_order
+
+    UNION ALL
+    SELECT 'Bank OD A/c',
+           'Bank OD A/c',
+           520
+
+    UNION ALL
+    SELECT 'Secured Loans',
+           'Secured Loans',
+           530
+
+    UNION ALL
+    SELECT 'Unsecured Loans',
+           'Unsecured Loans',
+           540
+) AS x
+JOIN groups p
+    ON p.company_id = 1
+   AND p.name = 'Loans (Liability)'
+WHERE NOT EXISTS
+(
+    SELECT 1
+    FROM groups g
+    WHERE g.company_id = 1
+      AND g.name = x.name
+);
+
+
+-- ============================================================
+-- COMMIT
+-- ============================================================
+
+COMMIT;
+
+SELECT
+    g.name AS group_name,
+    COALESCE(p.name, 'Primary') AS under_group,
+    g.nature
+FROM groups g
+LEFT JOIN groups p
+    ON p.id = g.parent_id
+WHERE g.company_id = 1
+ORDER BY g.display_order, g.name;
+
+START TRANSACTION;
+
+-- ============================================================
+-- 1. Rename old Direct Income group
+-- ============================================================
+
+UPDATE groups
+SET
+    name = 'Income (Direct)',
+    alias = 'Income (Direct)',
+    affects_gross_profit = 1,
+    is_system = 1
+WHERE company_id = 1
+  AND name = 'Direct Income';
+
+
+-- ============================================================
+-- 2. Rename old Indirect Income group
+-- ============================================================
+
+UPDATE groups
+SET
+    name = 'Income (Indirect)',
+    alias = 'Income (Indirect)',
+    affects_gross_profit = 0,
+    is_system = 1
+WHERE company_id = 1
+  AND name = 'Indirect Income';
+
+
+-- ============================================================
+-- 3. Delete obsolete "Loans" group
+-- ============================================================
+
+DELETE FROM groups
+WHERE company_id = 1
+  AND name = 'Loans';
+
+
+-- ============================================================
+-- 4. Add Expenses (Direct)
+-- ============================================================
+
+INSERT INTO groups
+(
+    company_id,
+    name,
+    alias,
+    parent_id,
+    nature,
+    affects_gross_profit,
+    behaves_like_subledger,
+    net_debit_credit_reporting,
+    used_for_calculation,
+    allocation_method,
+    hsn_sac_details_mode,
+    gst_rate_details_mode,
+    is_system,
+    display_order
+)
+SELECT
+    1,
+    'Expenses (Direct)',
+    'Expenses (Direct)',
+    NULL,
+    'Expenses',
+    1,
+    0,
+    0,
+    0,
+    'Not Applicable',
+    'As per Company/Group',
+    'As per Company/Group',
+    1,
+    170
+WHERE NOT EXISTS
+(
+    SELECT 1
+    FROM groups
+    WHERE company_id = 1
+      AND name = 'Expenses (Direct)'
+);
+
+
+-- ============================================================
+-- 5. Add Expenses (Indirect)
+-- ============================================================
+
+INSERT INTO groups
+(
+    company_id,
+    name,
+    alias,
+    parent_id,
+    nature,
+    affects_gross_profit,
+    behaves_like_subledger,
+    net_debit_credit_reporting,
+    used_for_calculation,
+    allocation_method,
+    hsn_sac_details_mode,
+    gst_rate_details_mode,
+    is_system,
+    display_order
+)
+SELECT
+    1,
+    'Expenses (Indirect)',
+    'Expenses (Indirect)',
+    NULL,
+    'Expenses',
+    0,
+    0,
+    0,
+    0,
+    'Not Applicable',
+    'As per Company/Group',
+    'As per Company/Group',
+    1,
+    180
+WHERE NOT EXISTS
+(
+    SELECT 1
+    FROM groups
+    WHERE company_id = 1
+      AND name = 'Expenses (Indirect)'
+);
+
+
+COMMIT;
+
+
+UPDATE groups
+SET parent_id = (
+    SELECT id
+    FROM (
+        SELECT id
+        FROM groups
+        WHERE company_id = 1
+          AND name = 'Current Assets'
+        LIMIT 1
+    ) AS ca
+)
+WHERE company_id = 1
+  AND name IN (
+      'Bank Accounts',
+      'Cash-in-Hand',
+      'Sundry Debtors'
+  );
+
+
+UPDATE groups
+SET parent_id = (
+    SELECT id
+    FROM (
+        SELECT id
+        FROM groups
+        WHERE company_id = 1
+          AND name = 'Current Liabilities'
+        LIMIT 1
+    ) AS cl
+)
+WHERE company_id = 1
+  AND name IN (
+      'Duties & Taxes',
+      'Sundry Creditors'
+  );
+
+
+  DELETE FROM groups
+WHERE company_id = 1
+  AND name IN ('Test Group', 'Test Child');
