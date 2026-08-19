@@ -54,6 +54,7 @@ $hasActiveCompany = $companyId > 0;
                 <a href="<?= BASE_URL ?>company/create.php" class="company-menu-item">Create Company</a>
                 <a href="<?= BASE_URL ?>company/alter.php" class="company-menu-item">Alter Company</a>
                 <a href="<?= BASE_URL ?>company/select.php" class="company-menu-item">Select Company</a>
+                <a href="<?= BASE_URL ?>company/delete.php" class="company-menu-item">Delete Company</a>
             </div>
             <div class="company-menu-companies">
                 <div class="company-menu-heading">List of Companies</div>
