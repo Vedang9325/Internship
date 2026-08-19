@@ -18,6 +18,8 @@ The application utilizes a dark green topbar header, sky-blue gateway navigation
    - [📂 Gateway Dashboard (`dashboard/`)](#-gateway-dashboard-dashboard)
    - [📂 Company Management Module (`company/`)](#-company-management-module-company)
    - [📂 Financial Year Module (`financial-year/`)](#-financial-year-module-financial-year)
+   - [📂 Chart of Accounts Module (`chart-of-accounts/`)](#-chart-of-accounts-module-chart-of-accounts)
+   - [📂 Groups Management Module (`groups/`)](#-groups-management-module-groups)
 4. [Local Environment Setup Instructions](#4-local-environment-setup-instructions)
 
 ---
@@ -322,6 +324,74 @@ The database schema (`finnserv`) is defined in `queries.txt` and contains 8 prim
   - `createFinancialYear(PDO $pdo, int $companyId, array $data)`: Inserts new row.
   - `updateFinancialYear(PDO $pdo, int $id, int $companyId, array $data)`: Updates financial year row.
   - `activateFinancialYear(PDO $pdo, int $id, int $companyId)`: Executes transactional SQL query deactivating all periods for the company and activating the selected period.
+
+---
+
+### 📂 Chart of Accounts Module (`chart-of-accounts/`)
+
+#### [`chart-of-accounts/index.php`](file:///c:/xampp/htdocs/Internship/FinnServ/chart-of-accounts/index.php)
+* **Purpose**: Primary gateway entry point for the Chart of Accounts list.
+* **Workflow**:
+  - Validates active company context inside session.
+  - Lists visual selection buttons for **Groups** and **Ledgers** (currently a disabled placeholder).
+  - Offers a footer back button navigation to return to the dashboard.
+
+---
+
+### 📂 Groups Management Module (`groups/`)
+
+#### [`groups/index.php`](file:///c:/xampp/htdocs/Internship/FinnServ/groups/index.php)
+* **Purpose**: Main portal for groups administration under the active company context.
+* **Workflow**:
+  - Directs user to options: **Create Group**, **Alter Group**, or **Display Groups**.
+  - Provides a back navigation link to return to the Chart of Accounts.
+
+#### [`groups/create.php`](file:///c:/xampp/htdocs/Internship/FinnServ/groups/create.php)
+* **Purpose**: Tally-style input form interface for creating new custom accounting groups.
+* **Form Inputs**: Group Name, Alias, parent group selector ("Under"), Group Nature (Assets, Liabilities, Income, Expenses), flag checks (affects gross profit, behaves like subledger, net debit/credit reporting, used for calculation), and tax details (allocation method, HSN/SAC, taxability, and GST rate).
+* **Submits To**: `groups/save.php`.
+
+#### [`groups/save.php`](file:///c:/xampp/htdocs/Internship/FinnServ/groups/save.php)
+* **Purpose**: Handles POST submission processing for creating a new group.
+* **Workflow**:
+  - Validates inputs via `validateGroupData()` from `groups/validator.php`.
+  - Performs transactional security validations to insert a new row in the `groups` table under the active company context.
+  - Redirects user back to `groups/` upon success or routes back to `groups/create.php` with error notifications and form state preservation.
+
+#### [`groups/alter.php`](file:///c:/xampp/htdocs/Internship/FinnServ/groups/alter.php)
+* **Purpose**: List view of groups tailored for editing/alteration selection.
+* **Workflow**:
+  - Fetches all groups linked to the active company context.
+  - Sorts default system-defined groups first, followed alphabetically by user-defined groups.
+  - Renders links to `groups/edit.php?id={id}`.
+
+#### [`groups/edit.php`](file:///c:/xampp/htdocs/Internship/FinnServ/groups/edit.php)
+* **Purpose**: Form interface populated with existing group values to update properties.
+* **Workflow**:
+  - Displays the Group alteration page.
+  - Controls field editability—system-defined groups cannot be deleted or have their critical structural properties altered.
+  - Submits updated parameters to `groups/update.php`.
+
+#### [`groups/update.php`](file:///c:/xampp/htdocs/Internship/FinnServ/groups/update.php)
+* **Purpose**: Handles the update form POST requests.
+* **Workflow**:
+  - Validates payload structures and performs a cyclical dependency check to ensure a group is not assigned to be a child of itself or one of its descendants.
+  - Executes database UPDATE statements and returns status feedback to `groups/`.
+
+#### [`groups/display.php`](file:///c:/xampp/htdocs/Internship/FinnServ/groups/display.php)
+* **Purpose**: Hierarchical, indented tree-view display of all active company accounting groups.
+* **Workflow**:
+  - Maps parent-child relationships and builds a hierarchical tree mapping list.
+  - Uses recursive rendering to output a visual tree pattern representing how groups are nested under main categories like Assets, Liabilities, Income, and Expenses.
+
+#### [`groups/validator.php`](file:///c:/xampp/htdocs/Internship/FinnServ/groups/validator.php)
+* **Purpose**: Validation rules engine helper.
+* **Functions**: `validateGroupData(PDO $pdo, int $companyId, array $data, ?int $groupId)` verifies name requirements, limits length, checks for duplicate group names, validates parent hierarchy existence, and ensures sound values are provided for numeric field variables (GST/HSN).
+
+#### [`groups/repository.php`](file:///c:/xampp/htdocs/Internship/FinnServ/groups/repository.php)
+* **Purpose**: Abstraction layers containing custom queries to run against `groups` database schema rows.
+* **Functions**:
+  - `getAllGroups(PDO $pdo, int $companyId)`: Fetches a structured array of all groups assigned to the specified company.
 
 ---
 
