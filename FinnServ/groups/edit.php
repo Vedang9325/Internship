@@ -960,12 +960,29 @@ $gstRate =
                         Accept
                     </button>
 
+                    <button
+                        type="submit"
+                        form="delete-group-form"
+                        class="company-action-button"
+                        style="background: #ef4444; color: #ffffff; border-color: #dc2626;"
+                        onmouseover="this.style.background='#dc2626'"
+                        onmouseout="this.style.background='#ef4444'"
+                    >
+                        Delete
+                    </button>
+
                 <?php endif; ?>
 
             </div>
 
 
         </form>
+
+        <?php if (!$isSystemGroup): ?>
+            <form id="delete-group-form" action="<?= BASE_URL ?>groups/delete.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this group?');">
+                <input type="hidden" name="id" value="<?= $groupId ?>">
+            </form>
+        <?php endif; ?>
 
     </main>
 

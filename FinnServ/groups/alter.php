@@ -41,6 +41,10 @@ $companyName =
 
 $groups = getAllGroups($pdo, $companyId);
 
+$groupError = $_SESSION['group_error'] ?? null;
+$groupSuccess = $_SESSION['group_success'] ?? null;
+unset($_SESSION['group_error'], $_SESSION['group_success']);
+
 
 /*
 |--------------------------------------------------------------------------
@@ -213,6 +217,18 @@ usort(
                 Select Group to Alter
 
             </div>
+
+            <?php if ($groupSuccess): ?>
+                <div class="form-success" style="margin: 10px 10px 0;">
+                    <?= htmlspecialchars($groupSuccess) ?>
+                </div>
+            <?php endif; ?>
+
+            <?php if ($groupError): ?>
+                <div class="form-error" style="margin: 10px 10px 0;">
+                    <?= htmlspecialchars($groupError) ?>
+                </div>
+            <?php endif; ?>
 
 
             <div class="company-select-list">

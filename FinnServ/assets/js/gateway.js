@@ -210,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
       event.preventDefault();
       // Try to find a back / quit button
       const backButton = document.querySelector(
-        '.company-menu-back, .company-action-button[href*="menu"], .company-action-button[href*="dashboard"], a[href*="dashboard"], a.company-menu-back'
+        '.company-menu-back, a.company-action-button, .company-action-button[href*="menu"], .company-action-button[href*="dashboard"], a[href*="dashboard"], a.company-menu-back'
       );
       if (backButton) {
         backButton.click();

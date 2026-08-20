@@ -202,6 +202,14 @@ $pageTitle = 'Groups';
                 </a>
 
 
+                <a
+                    href="<?= BASE_URL ?>groups/delete.php"
+                    class="company-menu-item"
+                >
+                    Delete
+                </a>
+
+
             </div>
 
 

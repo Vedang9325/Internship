@@ -1,852 +1,232 @@
-CREATE DATABASE finnserv
+CREATE DATABASE IF NOT EXISTS finnserv
 CHARACTER SET utf8mb4
 COLLATE utf8mb4_unicode_ci;
 
 USE finnserv;
 
-
-CREATE TABLE companies (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(150) NOT NULL,
-    mailing_name VARCHAR(150),
-    address TEXT,
-    state VARCHAR(100),
-    country VARCHAR(100) NOT NULL DEFAULT 'India',
-    pincode VARCHAR(10),
-    phone VARCHAR(20),
-    email VARCHAR(150),
-    gstin VARCHAR(15),
-    financial_year_start DATE NOT NULL,
-    financial_year_end DATE NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-
-
-CREATE TABLE users (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    company_id INT UNSIGNED NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    username VARCHAR(50) NOT NULL,
-    password VARCHAR(255) NOT NULL,
-    role ENUM('Admin', 'Manager', 'Accountant', 'Viewer') NOT NULL DEFAULT 'Viewer',
-    is_active TINYINT(1) NOT NULL DEFAULT 1,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    UNIQUE KEY unique_company_username (company_id, username),
-
-    FOREIGN KEY (company_id)
-        REFERENCES companies(id)
-        ON DELETE CASCADE
-);
-
-
-
-CREATE TABLE groups (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    company_id INT UNSIGNED NOT NULL,
-    name VARCHAR(100) NOT NULL,
-    parent_id INT UNSIGNED NULL,
-    nature ENUM(
-        'Assets',
-        'Liabilities',
-        'Income',
-        'Expenses'
-    ) NOT NULL,
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    UNIQUE KEY unique_company_group (company_id, name),
-
-    FOREIGN KEY (company_id)
-        REFERENCES companies(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (parent_id)
-        REFERENCES groups(id)
-        ON DELETE SET NULL
-);
-
-
-
-CREATE TABLE ledgers (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    company_id INT UNSIGNED NOT NULL,
-    group_id INT UNSIGNED NOT NULL,
-
-    name VARCHAR(150) NOT NULL,
-    alias VARCHAR(100),
-
-    opening_balance DECIMAL(15,2) NOT NULL DEFAULT 0.00,
-    opening_balance_type ENUM('Debit', 'Credit') NOT NULL DEFAULT 'Debit',
-
-    mailing_name VARCHAR(150),
-    mailing_address TEXT,
-    state VARCHAR(100),
-    country VARCHAR(100) NOT NULL DEFAULT 'India',
-    pincode VARCHAR(10),
-
-    phone VARCHAR(20),
-    email VARCHAR(150),
-
-    gstin VARCHAR(15),
-
-    provide_bank_details TINYINT(1) NOT NULL DEFAULT 0,
-    bank_name VARCHAR(150),
-    account_number VARCHAR(50),
-    ifsc_code VARCHAR(20),
-    branch_name VARCHAR(150),
-
-    is_active TINYINT(1) NOT NULL DEFAULT 1,
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        ON UPDATE CURRENT_TIMESTAMP,
-
-    UNIQUE KEY unique_company_ledger (company_id, name),
-
-    FOREIGN KEY (company_id)
-        REFERENCES companies(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (group_id)
-        REFERENCES groups(id)
-        ON DELETE RESTRICT
-);
-
-
-
-
-CREATE TABLE voucher_types (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    company_id INT UNSIGNED NOT NULL,
-    name VARCHAR(50) NOT NULL,
-    abbreviation VARCHAR(10) NOT NULL,
-    numbering_method ENUM(
-        'Automatic',
-        'Manual'
-    ) NOT NULL DEFAULT 'Automatic',
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    UNIQUE KEY unique_company_voucher_type (company_id, name),
-
-    FOREIGN KEY (company_id)
-        REFERENCES companies(id)
-        ON DELETE CASCADE
-);
-
-
-
-CREATE TABLE vouchers (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-
-    company_id INT UNSIGNED NOT NULL,
-    voucher_type_id INT UNSIGNED NOT NULL,
-
-    voucher_number VARCHAR(50) NOT NULL,
-    voucher_date DATE NOT NULL,
-
-    reference_number VARCHAR(100),
-    narration TEXT,
-
-    created_by INT UNSIGNED NOT NULL,
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-        ON UPDATE CURRENT_TIMESTAMP,
-
-    UNIQUE KEY unique_voucher_number (
-        company_id,
-        voucher_type_id,
-        voucher_number
-    ),
-
-    FOREIGN KEY (company_id)
-        REFERENCES companies(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (voucher_type_id)
-        REFERENCES voucher_types(id)
-        ON DELETE RESTRICT,
-
-    FOREIGN KEY (created_by)
-        REFERENCES users(id)
-        ON DELETE RESTRICT
-);
-
-
-
-
-CREATE TABLE voucher_entries (
-    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-
-    voucher_id BIGINT UNSIGNED NOT NULL,
-    ledger_id INT UNSIGNED NOT NULL,
-
-    debit DECIMAL(15,2) NOT NULL DEFAULT 0.00,
-    credit DECIMAL(15,2) NOT NULL DEFAULT 0.00,
-
-    narration VARCHAR(255),
-
-    FOREIGN KEY (voucher_id)
-        REFERENCES vouchers(id)
-        ON DELETE CASCADE,
-
-    FOREIGN KEY (ledger_id)
-        REFERENCES ledgers(id)
-        ON DELETE RESTRICT
-);
-
-
-
-
-CREATE TABLE financial_years (
-    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-
-    company_id INT UNSIGNED NOT NULL,
-
-    name VARCHAR(20) NOT NULL,
-    start_date DATE NOT NULL,
-    end_date DATE NOT NULL,
-
-    is_active TINYINT(1) NOT NULL DEFAULT 0,
-
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
-    UNIQUE KEY unique_company_financial_year (
-        company_id,
-        name
-    ),
-
-    FOREIGN KEY (company_id)
-        REFERENCES companies(id)
-        ON DELETE CASCADE
-);
-
-
-
-USE finnserv;
-
-ALTER TABLE companies
-    DROP COLUMN financial_year_start,
-    DROP COLUMN financial_year_end;
-
-
-
-ALTER TABLE groups
-
-    ADD COLUMN alias VARCHAR(100) NULL
-        AFTER name,
-
-    ADD COLUMN affects_gross_profit TINYINT(1) NOT NULL DEFAULT 0
-        AFTER nature,
-
-    ADD COLUMN behaves_like_subledger TINYINT(1) NOT NULL DEFAULT 0
-        AFTER affects_gross_profit,
-
-    ADD COLUMN net_debit_credit_reporting TINYINT(1) NOT NULL DEFAULT 0
-        AFTER behaves_like_subledger,
-
-    ADD COLUMN used_for_calculation TINYINT(1) NOT NULL DEFAULT 0
-        AFTER net_debit_credit_reporting,
-
-    ADD COLUMN allocation_method ENUM(
-        'Not Applicable',
-        'Appropriate by Qty',
-        'Appropriate by Value'
-    ) NOT NULL DEFAULT 'Not Applicable'
-        AFTER used_for_calculation,
-
-    ADD COLUMN hsn_sac_details_mode ENUM(
-        'As per Company/Group',
-        'Specify Details Here',
-        'Use GST Classification'
-    ) NOT NULL DEFAULT 'As per Company/Group'
-        AFTER allocation_method,
-
-    ADD COLUMN hsn_sac VARCHAR(20) NULL
-        AFTER hsn_sac_details_mode,
-
-    ADD COLUMN hsn_sac_description VARCHAR(255) NULL
-        AFTER hsn_sac,
-
-    ADD COLUMN gst_rate_details_mode ENUM(
-        'As per Company/Group',
-        'Specify Details Here',
-        'Specify Slab-Based Rates',
-        'Use GST Classification'
-    ) NOT NULL DEFAULT 'As per Company/Group'
-        AFTER hsn_sac_description,
-
-    ADD COLUMN taxability_type VARCHAR(50) NULL
-        AFTER gst_rate_details_mode,
-
-    ADD COLUMN gst_rate DECIMAL(5,2) NULL
-        AFTER taxability_type,
-
-    ADD COLUMN is_system TINYINT(1) NOT NULL DEFAULT 0
-        AFTER gst_rate,
-
-    ADD COLUMN display_order INT NOT NULL DEFAULT 0
-        AFTER is_system,
-
-    ADD COLUMN updated_at TIMESTAMP
-        DEFAULT CURRENT_TIMESTAMP
-        ON UPDATE CURRENT_TIMESTAMP
-        AFTER created_at;
+-- ============================================================
+-- 1. TABLE STRUCTURES
+-- ============================================================
+
+-- Table structure for table `companies`
+CREATE TABLE `companies` (
+  `id` INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `name` VARCHAR(150) NOT NULL,
+  `mailing_name` VARCHAR(150) DEFAULT NULL,
+  `address` TEXT DEFAULT NULL,
+  `state` VARCHAR(100) DEFAULT NULL,
+  `country` VARCHAR(100) NOT NULL DEFAULT 'India',
+  `pincode` VARCHAR(10) DEFAULT NULL,
+  `phone` VARCHAR(20) DEFAULT NULL,
+  `email` VARCHAR(150) DEFAULT NULL,
+  `gstin` VARCHAR(15) DEFAULT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Table structure for table `financial_years`
+CREATE TABLE `financial_years` (
+  `id` INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `company_id` INT(10) UNSIGNED NOT NULL,
+  `name` VARCHAR(20) NOT NULL,
+  `start_date` DATE NOT NULL,
+  `end_date` DATE NOT NULL,
+  `is_active` TINYINT(1) NOT NULL DEFAULT 0,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  UNIQUE KEY `unique_company_financial_year` (`company_id`, `name`),
+  FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Table structure for table `groups`
+CREATE TABLE `groups` (
+  `id` INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `company_id` INT(10) UNSIGNED NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
+  `alias` VARCHAR(100) DEFAULT NULL,
+  `parent_id` INT(10) UNSIGNED DEFAULT NULL,
+  `nature` ENUM('Assets', 'Liabilities', 'Income', 'Expenses') NOT NULL,
+  `affects_gross_profit` TINYINT(1) NOT NULL DEFAULT 0,
+  `behaves_like_subledger` TINYINT(1) NOT NULL DEFAULT 0,
+  `net_debit_credit_reporting` TINYINT(1) NOT NULL DEFAULT 0,
+  `used_for_calculation` TINYINT(1) NOT NULL DEFAULT 0,
+  `allocation_method` ENUM('Not Applicable', 'Appropriate by Qty', 'Appropriate by Value') NOT NULL DEFAULT 'Not Applicable',
+  `hsn_sac_details_mode` ENUM('As per Company/Group', 'Specify Details Here', 'Use GST Classification') NOT NULL DEFAULT 'As per Company/Group',
+  `hsn_sac` VARCHAR(20) DEFAULT NULL,
+  `hsn_sac_description` VARCHAR(255) DEFAULT NULL,
+  `gst_rate_details_mode` ENUM('As per Company/Group', 'Specify Details Here', 'Specify Slab-Based Rates', 'Use GST Classification') NOT NULL DEFAULT 'As per Company/Group',
+  `taxability_type` VARCHAR(50) DEFAULT NULL,
+  `gst_rate` DECIMAL(5,2) DEFAULT NULL,
+  `is_system` TINYINT(1) NOT NULL DEFAULT 0,
+  `display_order` INT(11) NOT NULL DEFAULT 0,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
+  UNIQUE KEY `unique_company_group` (`company_id`, `name`),
+  FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`parent_id`) REFERENCES `groups` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Table structure for table `ledgers`
+CREATE TABLE `ledgers` (
+  `id` INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `company_id` INT(10) UNSIGNED NOT NULL,
+  `group_id` INT(10) UNSIGNED NOT NULL,
+  `name` VARCHAR(150) NOT NULL,
+  `alias` VARCHAR(100) DEFAULT NULL,
+  `opening_balance` DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+  `opening_balance_type` ENUM('Debit', 'Credit') NOT NULL DEFAULT 'Debit',
+  `mailing_name` VARCHAR(150) DEFAULT NULL,
+  `mailing_address` TEXT DEFAULT NULL,
+  `state` VARCHAR(100) DEFAULT NULL,
+  `country` VARCHAR(100) NOT NULL DEFAULT 'India',
+  `pincode` VARCHAR(10) DEFAULT NULL,
+  `phone` VARCHAR(20) DEFAULT NULL,
+  `email` VARCHAR(150) DEFAULT NULL,
+  `gstin` VARCHAR(15) DEFAULT NULL,
+  `provide_bank_details` TINYINT(1) NOT NULL DEFAULT 0,
+  `bank_name` VARCHAR(150) DEFAULT NULL,
+  `account_number` VARCHAR(50) DEFAULT NULL,
+  `ifsc_code` VARCHAR(20) DEFAULT NULL,
+  `branch_name` VARCHAR(150) DEFAULT NULL,
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
+  UNIQUE KEY `unique_company_ledger` (`company_id`, `name`),
+  FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`group_id`) REFERENCES `groups` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Table structure for table `users`
+CREATE TABLE `users` (
+  `id` INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `company_id` INT(10) UNSIGNED NOT NULL,
+  `name` VARCHAR(100) NOT NULL,
+  `username` VARCHAR(50) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
+  `role` ENUM('Admin', 'Manager', 'Accountant', 'Viewer') NOT NULL DEFAULT 'Viewer',
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  UNIQUE KEY `unique_company_username` (`company_id`, `username`),
+  FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Table structure for table `voucher_types`
+CREATE TABLE `voucher_types` (
+  `id` INT(10) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `company_id` INT(10) UNSIGNED NOT NULL,
+  `name` VARCHAR(50) NOT NULL,
+  `abbreviation` VARCHAR(10) NOT NULL,
+  `numbering_method` ENUM('Automatic', 'Manual') NOT NULL DEFAULT 'Automatic',
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  UNIQUE KEY `unique_company_voucher_type` (`company_id`, `name`),
+  FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Table structure for table `vouchers`
+CREATE TABLE `vouchers` (
+  `id` BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `company_id` INT(10) UNSIGNED NOT NULL,
+  `voucher_type_id` INT(10) UNSIGNED NOT NULL,
+  `voucher_number` VARCHAR(50) NOT NULL,
+  `voucher_date` DATE NOT NULL,
+  `reference_number` VARCHAR(100) DEFAULT NULL,
+  `narration` TEXT DEFAULT NULL,
+  `created_by` INT(10) UNSIGNED NOT NULL,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
+  UNIQUE KEY `unique_voucher_number` (`company_id`, `voucher_type_id`, `voucher_number`),
+  FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`voucher_type_id`) REFERENCES `voucher_types` (`id`),
+  FOREIGN KEY (`created_by`) REFERENCES `users` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Table structure for table `voucher_entries`
+CREATE TABLE `voucher_entries` (
+  `id` BIGINT(20) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  `voucher_id` BIGINT(20) UNSIGNED NOT NULL,
+  `ledger_id` INT(10) UNSIGNED NOT NULL,
+  `debit` DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+  `credit` DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+  `narration` VARCHAR(255) DEFAULT NULL,
+  FOREIGN KEY (`voucher_id`) REFERENCES `vouchers` (`id`) ON DELETE CASCADE,
+  FOREIGN KEY (`ledger_id`) REFERENCES `ledgers` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+-- ============================================================
+-- 2. SEED DATA
+-- ============================================================
 
 START TRANSACTION;
 
--- ============================================================
--- FINNSERV STANDARD GROUPS
--- Company ID: 1
---
--- NULL parent_id = Primary
--- is_system = 1 = predefined/system group
--- ============================================================
+-- Seed Default Company
+INSERT INTO `companies` (`id`, `name`, `mailing_name`, `address`, `state`, `country`, `pincode`, `phone`, `email`, `gstin`, `created_at`, `updated_at`) VALUES
+(1, 'FinnServ Demo Company', 'FinnServ Accounting & Business', 'Navi Mumbai, Maharashtra, India', 'Maharashtra', 'India', '400000', NULL, NULL, NULL, '2026-08-13 06:00:48', '2026-08-17 14:22:41');
 
+-- Seed Financial Years
+INSERT INTO `financial_years` (`id`, `company_id`, `name`, `start_date`, `end_date`, `is_active`, `created_at`) VALUES
+(1, 1, '2026-27', '2026-04-01', '2027-03-31', 1, '2026-08-13 06:01:11'),
+(2, 1, '2027-28', '2027-04-01', '2028-03-31', 0, '2026-08-15 08:19:16');
 
--- ============================================================
--- PRIMARY GROUPS
--- ============================================================
+-- Seed Users
+INSERT INTO `users` (`id`, `company_id`, `name`, `username`, `password`, `role`, `is_active`, `created_at`) VALUES
+(1, 1, 'System Administrator', 'admin', '$2y$10$f1tSzV99ILNZw/x6tS2CFOYb0/aUnKZlLLnvzjhDMYRXWieEGhjQ.', 'Admin', 1, '2026-08-13 06:01:31');
 
-INSERT INTO groups
-(
-    company_id,
-    name,
-    alias,
-    parent_id,
-    nature,
-    affects_gross_profit,
-    is_system,
-    display_order
-)
-SELECT
-    1,
-    x.name,
-    x.alias,
-    NULL,
-    x.nature,
-    x.affects_gross_profit,
-    1,
-    x.display_order
-FROM
-(
-    SELECT 'Branch / Divisions' AS name,
-           'Branch / Divisions' AS alias,
-           'Assets' AS nature,
-           0 AS affects_gross_profit,
-           10 AS display_order
+-- Seed System Groups
+INSERT INTO `groups` (`id`, `company_id`, `name`, `alias`, `parent_id`, `nature`, `affects_gross_profit`, `behaves_like_subledger`, `net_debit_credit_reporting`, `used_for_calculation`, `allocation_method`, `hsn_sac_details_mode`, `hsn_sac`, `hsn_sac_description`, `gst_rate_details_mode`, `taxability_type`, `gst_rate`, `is_system`, `display_order`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Capital Account', NULL, NULL, 'Liabilities', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 0, '2026-08-13 06:01:55', '2026-08-19 13:31:01'),
+(2, 1, 'Current Assets', NULL, NULL, 'Assets', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 0, '2026-08-13 06:01:55', '2026-08-19 13:31:01'),
+(3, 1, 'Current Liabilities', NULL, NULL, 'Liabilities', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 0, '2026-08-13 06:01:55', '2026-08-19 13:31:01'),
+(4, 1, 'Fixed Assets', NULL, NULL, 'Assets', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 0, '2026-08-13 06:01:55', '2026-08-19 13:31:01'),
+(5, 1, 'Investments', NULL, NULL, 'Assets', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 0, '2026-08-13 06:01:55', '2026-08-19 13:31:01'),
+(7, 1, 'Income (Direct)', 'Income (Direct)', NULL, 'Income', 1, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 0, '2026-08-13 06:01:55', '2026-08-19 13:26:16'),
+(8, 1, 'Income (Indirect)', 'Income (Indirect)', NULL, 'Income', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 0, '2026-08-13 06:01:55', '2026-08-19 13:26:16'),
+(9, 1, 'Direct Expenses', NULL, NULL, 'Expenses', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 0, '2026-08-13 06:01:55', '2026-08-19 13:31:01'),
+(10, 1, 'Indirect Expenses', NULL, NULL, 'Expenses', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 0, '2026-08-13 06:01:55', '2026-08-19 13:31:01'),
+(11, 1, 'Purchase Accounts', NULL, NULL, 'Expenses', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 0, '2026-08-13 06:01:55', '2026-08-19 13:31:01'),
+(12, 1, 'Sales Accounts', NULL, NULL, 'Income', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 0, '2026-08-13 06:01:55', '2026-08-19 13:31:01'),
+(13, 1, 'Duties & Taxes', NULL, 3, 'Liabilities', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 0, '2026-08-13 06:01:55', '2026-08-19 13:47:59'),
+(14, 1, 'Sundry Debtors', NULL, 2, 'Assets', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 0, '2026-08-13 06:01:55', '2026-08-19 13:47:59'),
+(15, 1, 'Sundry Creditors', NULL, 3, 'Liabilities', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 0, '2026-08-13 06:01:55', '2026-08-19 13:47:59'),
+(16, 1, 'Cash-in-Hand', NULL, 2, 'Assets', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 0, '2026-08-13 06:01:55', '2026-08-19 13:47:59'),
+(17, 1, 'Bank Accounts', NULL, 2, 'Assets', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 0, '2026-08-13 06:01:55', '2026-08-19 13:47:59'),
+(18, 1, 'Branch / Divisions', 'Branch / Divisions', NULL, 'Assets', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 10, '2026-08-19 13:22:50', '2026-08-19 13:22:50'),
+(19, 1, 'Direct Incomes', 'Income (Direct)', NULL, 'Income', 1, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 60, '2026-08-19 13:22:50', '2026-08-19 13:22:50'),
+(20, 1, 'Indirect Incomes', 'Income (Indirect)', NULL, 'Income', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 90, '2026-08-19 13:22:50', '2026-08-19 13:22:50'),
+(21, 1, 'Loans (Liability)', 'Loans (Liability)', NULL, 'Liabilities', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 110, '2026-08-19 13:22:50', '2026-08-19 13:22:50'),
+(22, 1, 'Misc. Expenses (ASSET)', 'Misc. Expenses (ASSET)', NULL, 'Assets', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 120, '2026-08-19 13:22:50', '2026-08-19 13:22:50'),
+(23, 1, 'Suspense A/c', 'Suspense A/c', NULL, 'Assets', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 150, '2026-08-19 13:22:50', '2026-08-19 13:22:50'),
+(25, 1, 'Deposits (Asset)', 'Deposits (Asset)', 2, 'Assets', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 230, '2026-08-19 13:22:50', '2026-08-19 13:22:50'),
+(26, 1, 'Loans & Advances (Asset)', 'Loans & Advances (Asset)', 2, 'Assets', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 240, '2026-08-19 13:22:50', '2026-08-19 13:22:50'),
+(27, 1, 'Stock-in-Hand', 'Stock-in-Hand', 2, 'Assets', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 250, '2026-08-19 13:22:50', '2026-08-19 13:22:50'),
+(28, 1, 'Provisions', 'Provisions', 3, 'Liabilities', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 320, '2026-08-19 13:22:50', '2026-08-19 13:22:50'),
+(29, 1, 'Reserves & Surplus', 'Reserves & Surplus', 1, 'Liabilities', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 410, '2026-08-19 13:22:50', '2026-08-19 13:22:50'),
+(30, 1, 'Retained Earnings', 'Retained Earnings', 1, 'Liabilities', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 420, '2026-08-19 13:22:50', '2026-08-19 13:22:50'),
+(32, 1, 'Bank OCC A/c', 'Bank OCC A/c', 21, 'Liabilities', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 510, '2026-08-19 13:22:50', '2026-08-19 13:22:50'),
+(33, 1, 'Bank OD A/c', 'Bank OD A/c', 21, 'Liabilities', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 520, '2026-08-19 13:22:50', '2026-08-19 13:22:50'),
+(34, 1, 'Secured Loans', 'Secured Loans', 21, 'Liabilities', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 530, '2026-08-19 13:22:50', '2026-08-19 13:22:50'),
+(35, 1, 'Unsecured Loans', 'Unsecured Loans', 21, 'Liabilities', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 540, '2026-08-19 13:22:50', '2026-08-19 13:22:50'),
+(39, 1, 'Expenses (Direct)', 'Expenses (Direct)', NULL, 'Expenses', 1, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 170, '2026-08-19 13:26:16', '2026-08-19 13:26:16'),
+(40, 1, 'Expenses (Indirect)', 'Expenses (Indirect)', NULL, 'Expenses', 0, 0, 0, 0, 'Not Applicable', 'As per Company/Group', NULL, NULL, 'As per Company/Group', NULL, NULL, 1, 180, '2026-08-19 13:26:16', '2026-08-19 13:26:16');
 
-    UNION ALL
-    SELECT 'Capital Account',
-           'Capital Account',
-           'Liabilities',
-           0,
-           20
+-- Seed Ledgers
+INSERT INTO `ledgers` (`id`, `company_id`, `group_id`, `name`, `alias`, `opening_balance`, `opening_balance_type`, `mailing_name`, `mailing_address`, `state`, `country`, `pincode`, `phone`, `email`, `gstin`, `provide_bank_details`, `bank_name`, `account_number`, `ifsc_code`, `branch_name`, `is_active`, `created_at`, `updated_at`) VALUES
+(1, 1, 16, 'Cash', NULL, 0.00, 'Debit', NULL, NULL, NULL, 'India', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, 1, '2026-08-13 06:02:46', '2026-08-13 06:02:46'),
+(2, 1, 17, 'Bank Account', NULL, 0.00, 'Debit', NULL, NULL, NULL, 'India', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, 1, '2026-08-13 06:02:46', '2026-08-13 06:02:46'),
+(3, 1, 12, 'Sales', NULL, 0.00, 'Credit', NULL, NULL, NULL, 'India', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, 1, '2026-08-13 06:02:46', '2026-08-13 06:02:46'),
+(4, 1, 11, 'Purchase', NULL, 0.00, 'Debit', NULL, NULL, NULL, 'India', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, 1, '2026-08-13 06:02:46', '2026-08-13 06:02:46'),
+(5, 1, 13, 'CGST', NULL, 0.00, 'Credit', NULL, NULL, NULL, 'India', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, 1, '2026-08-13 06:02:46', '2026-08-13 06:02:46'),
+(6, 1, 13, 'SGST', NULL, 0.00, 'Credit', NULL, NULL, NULL, 'India', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, 1, '2026-08-13 06:02:46', '2026-08-13 06:02:46'),
+(7, 1, 13, 'IGST', NULL, 0.00, 'Credit', NULL, NULL, NULL, 'India', NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, 1, '2026-08-13 06:02:46', '2026-08-13 06:02:46');
 
-    UNION ALL
-    SELECT 'Current Assets',
-           'Current Assets',
-           'Assets',
-           0,
-           30
-
-    UNION ALL
-    SELECT 'Current Liabilities',
-           'Current Liabilities',
-           'Liabilities',
-           0,
-           40
-
-    UNION ALL
-    SELECT 'Direct Expenses',
-           'Expenses (Direct)',
-           'Expenses',
-           1,
-           50
-
-    UNION ALL
-    SELECT 'Direct Incomes',
-           'Income (Direct)',
-           'Income',
-           1,
-           60
-
-    UNION ALL
-    SELECT 'Fixed Assets',
-           'Fixed Assets',
-           'Assets',
-           0,
-           70
-
-    UNION ALL
-    SELECT 'Indirect Expenses',
-           'Expenses (Indirect)',
-           'Expenses',
-           0,
-           80
-
-    UNION ALL
-    SELECT 'Indirect Incomes',
-           'Income (Indirect)',
-           'Income',
-           0,
-           90
-
-    UNION ALL
-    SELECT 'Investments',
-           'Investments',
-           'Assets',
-           0,
-           100
-
-    UNION ALL
-    SELECT 'Loans (Liability)',
-           'Loans (Liability)',
-           'Liabilities',
-           0,
-           110
-
-    UNION ALL
-    SELECT 'Misc. Expenses (ASSET)',
-           'Misc. Expenses (ASSET)',
-           'Assets',
-           0,
-           120
-
-    UNION ALL
-    SELECT 'Purchase Accounts',
-           'Purchase Accounts',
-           'Expenses',
-           0,
-           130
-
-    UNION ALL
-    SELECT 'Sales Accounts',
-           'Sales Accounts',
-           'Income',
-           1,
-           140
-
-    UNION ALL
-    SELECT 'Suspense A/c',
-           'Suspense A/c',
-           'Assets',
-           0,
-           150
-) AS x
-WHERE NOT EXISTS
-(
-    SELECT 1
-    FROM groups g
-    WHERE g.company_id = 1
-      AND g.name = x.name
-);
-
-
--- ============================================================
--- CURRENT ASSETS
--- ============================================================
-
-INSERT INTO groups
-(
-    company_id,
-    name,
-    alias,
-    parent_id,
-    nature,
-    is_system,
-    display_order
-)
-SELECT
-    1,
-    x.name,
-    x.alias,
-    p.id,
-    'Assets',
-    1,
-    x.display_order
-FROM
-(
-    SELECT 'Bank Accounts' AS name,
-           'Bank Accounts' AS alias,
-           210 AS display_order
-
-    UNION ALL
-    SELECT 'Cash-in-Hand',
-           'Cash-in-Hand',
-           220
-
-    UNION ALL
-    SELECT 'Deposits (Asset)',
-           'Deposits (Asset)',
-           230
-
-    UNION ALL
-    SELECT 'Loans & Advances (Asset)',
-           'Loans & Advances (Asset)',
-           240
-
-    UNION ALL
-    SELECT 'Stock-in-Hand',
-           'Stock-in-Hand',
-           250
-
-    UNION ALL
-    SELECT 'Sundry Debtors',
-           'Sundry Debtors',
-           260
-) AS x
-JOIN groups p
-    ON p.company_id = 1
-   AND p.name = 'Current Assets'
-WHERE NOT EXISTS
-(
-    SELECT 1
-    FROM groups g
-    WHERE g.company_id = 1
-      AND g.name = x.name
-);
-
-
--- ============================================================
--- CURRENT LIABILITIES
--- ============================================================
-
-INSERT INTO groups
-(
-    company_id,
-    name,
-    alias,
-    parent_id,
-    nature,
-    is_system,
-    display_order
-)
-SELECT
-    1,
-    x.name,
-    x.alias,
-    p.id,
-    'Liabilities',
-    1,
-    x.display_order
-FROM
-(
-    SELECT 'Duties & Taxes' AS name,
-           'Duties & Taxes' AS alias,
-           310 AS display_order
-
-    UNION ALL
-    SELECT 'Provisions',
-           'Provisions',
-           320
-
-    UNION ALL
-    SELECT 'Sundry Creditors',
-           'Sundry Creditors',
-           330
-) AS x
-JOIN groups p
-    ON p.company_id = 1
-   AND p.name = 'Current Liabilities'
-WHERE NOT EXISTS
-(
-    SELECT 1
-    FROM groups g
-    WHERE g.company_id = 1
-      AND g.name = x.name
-);
-
-
--- ============================================================
--- CAPITAL ACCOUNT
--- ============================================================
-
-INSERT INTO groups
-(
-    company_id,
-    name,
-    alias,
-    parent_id,
-    nature,
-    is_system,
-    display_order
-)
-SELECT
-    1,
-    x.name,
-    x.alias,
-    p.id,
-    'Liabilities',
-    1,
-    x.display_order
-FROM
-(
-    SELECT 'Reserves & Surplus' AS name,
-           'Reserves & Surplus' AS alias,
-           410 AS display_order
-
-    UNION ALL
-    SELECT 'Retained Earnings',
-           'Retained Earnings',
-           420
-) AS x
-JOIN groups p
-    ON p.company_id = 1
-   AND p.name = 'Capital Account'
-WHERE NOT EXISTS
-(
-    SELECT 1
-    FROM groups g
-    WHERE g.company_id = 1
-      AND g.name = x.name
-);
-
-
--- ============================================================
--- LOANS (LIABILITY)
--- ============================================================
-
-INSERT INTO groups
-(
-    company_id,
-    name,
-    alias,
-    parent_id,
-    nature,
-    is_system,
-    display_order
-)
-SELECT
-    1,
-    x.name,
-    x.alias,
-    p.id,
-    'Liabilities',
-    1,
-    x.display_order
-FROM
-(
-    SELECT 'Bank OCC A/c' AS name,
-           'Bank OCC A/c' AS alias,
-           510 AS display_order
-
-    UNION ALL
-    SELECT 'Bank OD A/c',
-           'Bank OD A/c',
-           520
-
-    UNION ALL
-    SELECT 'Secured Loans',
-           'Secured Loans',
-           530
-
-    UNION ALL
-    SELECT 'Unsecured Loans',
-           'Unsecured Loans',
-           540
-) AS x
-JOIN groups p
-    ON p.company_id = 1
-   AND p.name = 'Loans (Liability)'
-WHERE NOT EXISTS
-(
-    SELECT 1
-    FROM groups g
-    WHERE g.company_id = 1
-      AND g.name = x.name
-);
-
-
--- ============================================================
--- COMMIT
--- ============================================================
+-- Seed Voucher Types
+INSERT INTO `voucher_types` (`id`, `company_id`, `name`, `abbreviation`, `numbering_method`, `created_at`) VALUES
+(1, 1, 'Payment', 'PAY', 'Automatic', '2026-08-13 06:02:25'),
+(2, 1, 'Receipt', 'REC', 'Automatic', '2026-08-13 06:02:25'),
+(3, 1, 'Contra', 'CON', 'Automatic', '2026-08-13 06:02:25'),
+(4, 1, 'Journal', 'JRN', 'Automatic', '2026-08-13 06:02:25'),
+(5, 1, 'Sales', 'SAL', 'Automatic', '2026-08-13 06:02:25'),
+(6, 1, 'Purchase', 'PUR', 'Automatic', '2026-08-13 06:02:25'),
+(7, 1, 'Sales Return', 'SR', 'Automatic', '2026-08-13 06:02:25'),
+(8, 1, 'Purchase Return', 'PR', 'Automatic', '2026-08-13 06:02:25');
 
 COMMIT;
-
-SELECT
-    g.name AS group_name,
-    COALESCE(p.name, 'Primary') AS under_group,
-    g.nature
-FROM groups g
-LEFT JOIN groups p
-    ON p.id = g.parent_id
-WHERE g.company_id = 1
-ORDER BY g.display_order, g.name;
-
-START TRANSACTION;
-
--- ============================================================
--- 1. Rename old Direct Income group
--- ============================================================
-
-UPDATE groups
-SET
-    name = 'Income (Direct)',
-    alias = 'Income (Direct)',
-    affects_gross_profit = 1,
-    is_system = 1
-WHERE company_id = 1
-  AND name = 'Direct Income';
-
-
--- ============================================================
--- 2. Rename old Indirect Income group
--- ============================================================
-
-UPDATE groups
-SET
-    name = 'Income (Indirect)',
-    alias = 'Income (Indirect)',
-    affects_gross_profit = 0,
-    is_system = 1
-WHERE company_id = 1
-  AND name = 'Indirect Income';
-
-
--- ============================================================
--- 3. Delete obsolete "Loans" group
--- ============================================================
-
-DELETE FROM groups
-WHERE company_id = 1
-  AND name = 'Loans';
-
-
--- ============================================================
--- 4. Add Expenses (Direct)
--- ============================================================
-
-INSERT INTO groups
-(
-    company_id,
-    name,
-    alias,
-    parent_id,
-    nature,
-    affects_gross_profit,
-    behaves_like_subledger,
-    net_debit_credit_reporting,
-    used_for_calculation,
-    allocation_method,
-    hsn_sac_details_mode,
-    gst_rate_details_mode,
-    is_system,
-    display_order
-)
-SELECT
-    1,
-    'Expenses (Direct)',
-    'Expenses (Direct)',
-    NULL,
-    'Expenses',
-    1,
-    0,
-    0,
-    0,
-    'Not Applicable',
-    'As per Company/Group',
-    'As per Company/Group',
-    1,
-    170
-WHERE NOT EXISTS
-(
-    SELECT 1
-    FROM groups
-    WHERE company_id = 1
-      AND name = 'Expenses (Direct)'
-);
-
-
--- ============================================================
--- 5. Add Expenses (Indirect)
--- ============================================================
-
-INSERT INTO groups
-(
-    company_id,
-    name,
-    alias,
-    parent_id,
-    nature,
-    affects_gross_profit,
-    behaves_like_subledger,
-    net_debit_credit_reporting,
-    used_for_calculation,
-    allocation_method,
-    hsn_sac_details_mode,
-    gst_rate_details_mode,
-    is_system,
-    display_order
-)
-SELECT
-    1,
-    'Expenses (Indirect)',
-    'Expenses (Indirect)',
-    NULL,
-    'Expenses',
-    0,
-    0,
-    0,
-    0,
-    'Not Applicable',
-    'As per Company/Group',
-    'As per Company/Group',
-    1,
-    180
-WHERE NOT EXISTS
-(
-    SELECT 1
-    FROM groups
-    WHERE company_id = 1
-      AND name = 'Expenses (Indirect)'
-);
-
-
-COMMIT;
-
-
-UPDATE groups
-SET parent_id = (
-    SELECT id
-    FROM (
-        SELECT id
-        FROM groups
-        WHERE company_id = 1
-          AND name = 'Current Assets'
-        LIMIT 1
-    ) AS ca
-)
-WHERE company_id = 1
-  AND name IN (
-      'Bank Accounts',
-      'Cash-in-Hand',
-      'Sundry Debtors'
-  );
-
-
-UPDATE groups
-SET parent_id = (
-    SELECT id
-    FROM (
-        SELECT id
-        FROM groups
-        WHERE company_id = 1
-          AND name = 'Current Liabilities'
-        LIMIT 1
-    ) AS cl
-)
-WHERE company_id = 1
-  AND name IN (
-      'Duties & Taxes',
-      'Sundry Creditors'
-  );
-
-
-  DELETE FROM groups
-WHERE company_id = 1
-  AND name IN ('Test Group', 'Test Child');
