@@ -106,12 +106,7 @@ $pageTitle = 'Gateway of FinnServ';
                 <div class="gateway-section-title">MASTERS</div>
                 <a href="<?= BASE_URL ?>company/menu.php" class="gateway-menu-item">Company</a>
                 <a href="<?= BASE_URL ?>financial-year/" class="gateway-menu-item">Financial Years</a>
-                <a
-    href="<?= BASE_URL ?>chart-of-accounts/"
-    class="gateway-menu-item"
->
-    Chart of Accounts
-</a>
+                <a href="#" class="gateway-menu-item disabled">Chart of Accounts</a>
             </div>
             <div class="gateway-section">
                 <div class="gateway-section-title">TRANSACTIONS</div>

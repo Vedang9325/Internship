@@ -19,5 +19,5 @@ function getFlash(): ?array
         unset($_SESSION['flash']);
     }
     
-    return $flash;
+    return $flash;  
 }
