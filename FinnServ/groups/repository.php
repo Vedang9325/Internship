@@ -2,15 +2,6 @@
 
 declare(strict_types=1);
 
-/*
-|--------------------------------------------------------------------------
-| Group Repository
-|--------------------------------------------------------------------------
-|
-| All database queries related to Groups live here.
-|
-*/
-
 
 /**
  * Get all groups belonging to a company.
