@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Query all potential menu and list items
     const items = Array.from(
       document.querySelectorAll(
-        ".gateway-menu-item:not(.disabled), .gateway-quit, .company-menu-item, .company-menu-back, .company-select-item, .company-action-button, .btn, .action-link, table.data-table tbody tr"
+        ".gateway-menu-item:not(.disabled), .gateway-quit, .company-menu-item:not(.disabled), .company-menu-back, .company-select-item, .company-action-button, .btn, .action-link, table.data-table tbody tr"
       )
     ).filter(el => {
       // Ensure element is visible and not hidden

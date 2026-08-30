@@ -87,6 +87,12 @@
   background: #fbbf24;
 }
 
+.company-menu-item.disabled {
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+
 .company-menu-companies {
   margin-top: 2px;
 
